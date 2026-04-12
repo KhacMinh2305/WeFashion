@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WeFashion</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="fcm_notification_channel">WeFashion_Fcm</string>
 </resources>

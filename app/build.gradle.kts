@@ -1,10 +1,13 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-
     // hilt
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    //firebase
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -15,12 +18,18 @@ android {
 
     defaultConfig {
         applicationId = "com.minhdk.wefashion"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
+
+        missingDimensionStrategy("tomtom-sdk-version", "complete")
     }
 
     buildTypes {
@@ -40,6 +49,16 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    val localProperties = Properties().apply {
+        load(rootProject.file("local.properties").inputStream())
+    }
+    val tomtomApiKey = localProperties.getProperty("TOMTOM_API_KEY") ?: ""
+    buildTypes.configureEach {
+        defaultConfig {
+            buildConfigField("String", "TOMTOM_API_KEY", "\"$tomtomApiKey\"")
+        }
     }
 }
 
@@ -79,7 +98,7 @@ dependencies {
     // Retrofit
     implementation(libs.retrofit)
 
-    // Glide
+    // OkHttp
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
@@ -90,4 +109,17 @@ dependencies {
     // Paging
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
+
+    // firebase
+    // Import the Firebase BoM
+    implementation(platform(libs.firebase.bom))
+    // Google Analytics
+    implementation(libs.firebase.analytics)
+    // FCM
+    implementation(libs.firebase.messaging)
+
+    // Map
+    val version = "2.2.0"
+    implementation("com.tomtom.sdk:init:$version")
+
 }

@@ -1,4 +1,4 @@
-package com.minhdk.wefashion.ui.theme
+package com.minhdk.wefashion.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
