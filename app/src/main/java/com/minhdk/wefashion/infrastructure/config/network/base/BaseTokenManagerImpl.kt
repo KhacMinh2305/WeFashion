@@ -1,6 +1,5 @@
 package com.minhdk.wefashion.infrastructure.config.network.base
 
-import android.util.Log
 import com.minhdk.wefashion.util.helper.logD
 import java.util.concurrent.atomic.AtomicReference
 
@@ -42,9 +41,7 @@ abstract class BaseTokenManagerImpl<T, B>(
 
     override fun forceFetching(): T? {
         return try {
-            synchronized(this) {
-                fetchAndSet()
-            }
+            synchronized(this) { fetchAndSet() }
         } catch (e: Exception) {
             log(e.toString())
             token.set(null)
@@ -56,10 +53,10 @@ abstract class BaseTokenManagerImpl<T, B>(
         return try {
             synchronized(this) {
                 if(isExpired()) {
-                    Log.d("vewsmn", "token expired. Fetching")
+                    log("Token is expired! Fetch a new token")
                     fetchAndSet()
                 } else {
-                    Log.d("vewsmn", "Token is not expired. Use this")
+                    log("Token is not expired! Use cached token")
                     getToken()
                 }
             }

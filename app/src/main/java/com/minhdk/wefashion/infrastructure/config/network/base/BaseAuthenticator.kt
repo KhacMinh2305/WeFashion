@@ -1,37 +1,42 @@
 package com.minhdk.wefashion.infrastructure.config.network.base
 
-import android.util.Log
+import com.minhdk.wefashion.util.helper.logD
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import java.util.concurrent.atomic.AtomicInteger
 
 abstract class BaseAuthenticator<T>(
     private val manager: TokenManager<T>
 ): Authenticator {
 
-    private var retry = 0
+    protected open val maxRetry = 3
+    protected open val retryDelay: Long = 2000L
+    protected open val tag = "BaseAuthenticator"
+    private val retryCount = AtomicInteger(0)
+
+    // can add a time for delaying each time retry  4-times failed so that this optimizes performance and UX
 
     abstract fun provideRawToken(): String?
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        if(retry < 2) {
-            retry++
-            val req = response.request.url.toString()
-            Log.d("vewsmn", "request: $req come in")
-            synchronized(this) {
-                Log.d("vewsmn", "request: $req start fetching")
-                if(manager.getOrFetchLocking() == null) return null
-                Log.d("vewsmn", "request: $req get token success. Send $req again")
-                return provideRawToken()?.let {
-                    Log.d("vewsmn", "token: $it")
-                    response.request.newBuilder()
-                        .header("Authorization", "Bearer $it")
-                        .build()
-                }
+        val url = response.request.url.toString()
+        synchronized(this) {
+            logD(tag, "request $url take place !")
+            while(retryCount.get() <= maxRetry) {
+                val time = retryCount.incrementAndGet()
+                logD(tag, "Fetching times: $time")
+                if(manager.getOrFetchLocking() != null) break
+                Thread.sleep(retryDelay)
+            }
+            retryCount.set(0)
+            if(manager.getToken() == null) logD(tag, "Token is still null after retrying, giving up !")
+            return provideRawToken()?.let {
+                response.request.newBuilder()
+                    .header("Authorization", "Bearer $it")
+                    .build()
             }
         }
-        retry = 0
-        return null
     }
 }

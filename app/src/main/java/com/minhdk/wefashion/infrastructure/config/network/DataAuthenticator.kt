@@ -11,6 +11,8 @@ class DataAuthenticator @Inject constructor(
     private val manager: TokenManager<DataAccessToken>
 ): BaseAuthenticator<DataAccessToken>(manager) {
 
+    override val tag = "DataAuthenticator"
+
     override fun provideRawToken(): String? {
         return manager.getToken()?.token
     }
