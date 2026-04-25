@@ -1,7 +1,6 @@
 package com.minhdk.wefashion.infrastructure.remote
 
 import com.minhdk.wefashion.infrastructure.model.baseResponse.BaseResponse
-import com.minhdk.wefashion.infrastructure.model.token.AccessTokenBody
 import com.minhdk.wefashion.infrastructure.model.token.DataAccessToken
 import retrofit2.Call
 import retrofit2.http.Body

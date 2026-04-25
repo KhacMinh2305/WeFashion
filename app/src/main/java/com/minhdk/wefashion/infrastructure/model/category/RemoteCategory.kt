@@ -1,15 +1,14 @@
-package com.minhdk.wefashion.infrastructure.model.token
+package com.minhdk.wefashion.infrastructure.model.category
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class AccessTokenBody(
+data class RemoteCategory(
     @SerializedName("id")
     @Expose
     val id: Int,
-    @SerializedName("token")
+    @SerializedName("name")
     @Expose
-    val token: String = ""
+    val name: String
 )

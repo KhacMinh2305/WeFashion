@@ -3,8 +3,11 @@ package com.minhdk.wefashion.infrastructure.config.network
 import com.minhdk.wefashion.infrastructure.config.network.base.BaseAuthenticator
 import com.minhdk.wefashion.infrastructure.config.network.base.TokenManager
 import com.minhdk.wefashion.infrastructure.model.token.DataAccessToken
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DataAuthentication(
+@Singleton
+class DataAuthenticator @Inject constructor(
     private val manager: TokenManager<DataAccessToken>
 ): BaseAuthenticator<DataAccessToken>(manager) {
 
