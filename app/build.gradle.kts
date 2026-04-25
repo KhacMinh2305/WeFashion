@@ -55,9 +55,11 @@ android {
         load(rootProject.file("local.properties").inputStream())
     }
     val tomtomApiKey = localProperties.getProperty("TOMTOM_API_KEY") ?: ""
+    val baseUrl = localProperties.getProperty("BASE_URL") ?: ""
     buildTypes.configureEach {
         defaultConfig {
             buildConfigField("String", "TOMTOM_API_KEY", "\"$tomtomApiKey\"")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
     }
 }
@@ -97,6 +99,7 @@ dependencies {
 
     // Retrofit
     implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     // OkHttp
     implementation(platform(libs.okhttp.bom))
