@@ -8,6 +8,9 @@ import retrofit2.http.Query
 
 interface DataApiService {
 
+    //----------------------------------------------------------------------
+    // Category
+    //----------------------------------------------------------------------
     @GET("/api/category")
     suspend fun getCategories(): BaseResponse<RemoteCategories>
 

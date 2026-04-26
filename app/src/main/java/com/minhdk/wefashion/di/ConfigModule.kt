@@ -30,10 +30,7 @@ class ConfigModule {
     ): TokenFetcher<DataAccessToken, Nothing> {
         return object: TokenFetcher<DataAccessToken, Nothing> {
             override fun fetch(body: Nothing?): DataAccessToken? {
-                Log.d("vewsmn", "Token fetching.....")
-                val tk = authService.fetchToken().execute().body()?.data
-                Log.d("vewsmn", "Token fetched: $tk")
-                return tk
+                return authService.fetchToken().execute().body()?.data
             }
         }
     }

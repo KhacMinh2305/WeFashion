@@ -27,9 +27,7 @@ abstract class BaseTokenManagerImpl<T, B>(
         return t
     }
 
-    protected open fun log(message: String) {
-        logD(tag, message)
-    }
+    protected open fun log(message: String) = logD(tag, message)
 
     //------------------------------------------------------
     //                  Business functions
