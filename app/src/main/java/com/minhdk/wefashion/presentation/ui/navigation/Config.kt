@@ -1,8 +1,11 @@
 package com.minhdk.wefashion.presentation.ui.navigation
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.minhdk.wefashion.R
 import com.minhdk.wefashion.presentation.ui.navigation.base.NavBarItem
 import com.minhdk.wefashion.presentation.ui.navigation.base.NavBarItemResource
+import com.minhdk.wefashion.presentation.ui.navigation.base.singleColorNavBarItemConfig
 
 val navigationItems = listOf(
     createNavBarItem(0, NavBarItemResource.RESOURCE_INT, R.drawable.ic_home_inactive ,"Home"),
@@ -19,3 +22,9 @@ private fun <T> createNavBarItem(pos: Int, type: NavBarItemResource, ic: T, labe
         override val label= label
     }
 }
+
+fun appNavBarItemConfig() = singleColorNavBarItemConfig(
+    selected = Color.Magenta,
+    unselected = Color.LightGray,
+    containerAlpha = 0.35f,
+    bordered = 12.dp)

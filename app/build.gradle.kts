@@ -124,5 +124,9 @@ dependencies {
     // Map
     val version = "2.2.0"
     implementation("com.tomtom.sdk:init:$version")
+    implementation("com.tomtom.sdk.maps:map-display-compose-standard:$version")
+
+    // icons
+    implementation("androidx.compose.material:material-icons-extended")
 
 }
