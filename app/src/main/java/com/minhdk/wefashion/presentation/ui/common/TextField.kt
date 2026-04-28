@@ -131,3 +131,24 @@ fun BaseInputText(
         }
     }
 }
+
+//BaseInputText(
+//value = text,
+//onValueChange = { text = it },
+//placeholder = "Enter your email",
+//leadingIcon = Icons.Default.Preview,
+//trailingIcon = Icons.Default.LocalActivity,
+//showTrailingIcon = true,
+//trailingEnabled = true,
+//onTrailingClick = {  },
+//
+//textColor = Color(0xFFFFFFFF),
+//placeholderColor = Color(0xFF6B6B72),
+//focusedBorderColor = Color(0xFF5B5BD6),
+//unfocusedBorderColor = Color(0xFFE5E7EB),
+//backgroundColor = Color.Transparent,
+//leadingIconColor = Color(0xFF9CA3AF),
+//trailingIconColor = Color(0xFFFFFFFF),
+//trailingIconFocusedColor = Color(0xFF5B5BD6),
+//trailingIconDisabledColor = Color(0xFF505050)
+//)

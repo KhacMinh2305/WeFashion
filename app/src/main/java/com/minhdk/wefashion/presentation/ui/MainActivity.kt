@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocalActivity
 import androidx.compose.material.icons.filled.Preview
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.LineHeightStyle
 import com.minhdk.wefashion.infrastructure.remote.DataApiService
+import com.minhdk.wefashion.presentation.ui.common.BaseButton
 import com.minhdk.wefashion.presentation.ui.common.BaseInputText
 import com.minhdk.wefashion.presentation.ui.navigation.appNavBarItemConfig
 import com.minhdk.wefashion.presentation.ui.navigation.base.AppBottomBar
@@ -66,31 +68,18 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { _ ->
 
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        BaseInputText(
-                            value = text,
-                            onValueChange = { text = it },
-                            placeholder = "Enter your email",
-                            leadingIcon = Icons.Default.Preview,
-                            trailingIcon = Icons.Default.LocalActivity,
-                            showTrailingIcon = true,
-                            trailingEnabled = true,
-                            onTrailingClick = {  },
+                    BaseButton(
+                        text = "Create Account",
+                        onClick = { /* handle */ },
+                        enabled = true,
+                        modifier = Modifier
+                            .fillMaxWidth(),
 
-                            textColor = Color(0xFFFFFFFF),
-                            placeholderColor = Color(0xFF6B6B72),
-                            focusedBorderColor = Color(0xFF5B5BD6),
-                            unfocusedBorderColor = Color(0xFFE5E7EB),
-                            backgroundColor = Color.Transparent,
-                            leadingIconColor = Color(0xFF9CA3AF),
-                            trailingIconColor = Color(0xFFFFFFFF),
-                            trailingIconFocusedColor = Color(0xFF5B5BD6),
-                            trailingIconDisabledColor = Color(0xFF505050)
-                        )
-                    }
+                        backgroundColor = Color(0xFF5B5BD6),
+                        disabledBackgroundColor = Color(0xFFBDBDF5),
+                        contentColor = Color.White,
+                        disabledContentColor = Color.White
+                    )
 
                 }
             }
