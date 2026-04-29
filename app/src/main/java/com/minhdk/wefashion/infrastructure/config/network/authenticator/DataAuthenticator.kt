@@ -1,7 +1,6 @@
-package com.minhdk.wefashion.infrastructure.config.network
+package com.minhdk.wefashion.infrastructure.config.network.authenticator
 
-import com.minhdk.wefashion.infrastructure.config.network.base.BaseAuthenticator
-import com.minhdk.wefashion.infrastructure.config.network.base.TokenManager
+import com.minhdk.wefashion.infrastructure.config.network.token.base.TokenManager
 import com.minhdk.wefashion.infrastructure.model.token.DataAccessToken
 import javax.inject.Inject
 import javax.inject.Singleton

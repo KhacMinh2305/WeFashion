@@ -1,5 +1,6 @@
-package com.minhdk.wefashion.infrastructure.config.network.base
+package com.minhdk.wefashion.infrastructure.config.network.authenticator
 
+import com.minhdk.wefashion.infrastructure.config.network.token.base.TokenManager
 import com.minhdk.wefashion.util.helper.logD
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -31,7 +32,10 @@ abstract class BaseAuthenticator<T>(
                 Thread.sleep(retryDelay)
             }
             retryCount.set(0)
-            if(manager.getToken() == null) logD(tag, "Token is still null after retrying, giving up !")
+            if(manager.getToken() == null) logD(
+                tag,
+                "Token is still null after retrying, giving up !"
+            )
             return provideRawToken()?.let {
                 response.request.newBuilder()
                     .header("Authorization", "Bearer $it")

@@ -1,8 +1,8 @@
-package com.minhdk.wefashion.infrastructure.config.network
+package com.minhdk.wefashion.infrastructure.config.network.token
 
 import com.minhdk.wefashion.di.ConfigModule
-import com.minhdk.wefashion.infrastructure.config.network.base.BaseTokenManagerImpl
-import com.minhdk.wefashion.infrastructure.config.network.base.TokenFetcher
+import com.minhdk.wefashion.infrastructure.config.network.token.base.BaseTokenManagerImpl
+import com.minhdk.wefashion.infrastructure.config.network.token.base.TokenFetcher
 import com.minhdk.wefashion.infrastructure.model.token.DataAccessToken
 import javax.inject.Inject
 

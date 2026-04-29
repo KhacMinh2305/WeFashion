@@ -1,4 +1,4 @@
-package com.minhdk.wefashion.infrastructure.config.network.base
+package com.minhdk.wefashion.infrastructure.config.network.token.base
 
 interface TokenManager<T> {
 

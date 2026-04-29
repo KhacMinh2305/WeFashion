@@ -1,4 +1,4 @@
-package com.minhdk.wefashion.infrastructure.config.network.base
+package com.minhdk.wefashion.infrastructure.config.network.token.base
 
 import com.minhdk.wefashion.util.helper.logD
 import java.util.concurrent.atomic.AtomicReference

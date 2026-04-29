@@ -1,7 +1,9 @@
 package com.minhdk.wefashion.di
 
 import com.minhdk.wefashion.BuildConfig
-import com.minhdk.wefashion.infrastructure.config.network.DataAuthenticator
+import com.minhdk.wefashion.infrastructure.config.network.authenticator.DataAuthenticator
+import com.minhdk.wefashion.infrastructure.config.network.interceptor.NetworkInterceptor
+import com.minhdk.wefashion.infrastructure.config.network.retry.base.RetryManager
 import com.minhdk.wefashion.infrastructure.remote.AuthenticationService
 import com.minhdk.wefashion.infrastructure.remote.DataApiService
 import dagger.Module
@@ -37,13 +39,15 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideDataService(
-        authenticator: DataAuthenticator
+        authenticator: DataAuthenticator,
+        retryManager: RetryManager
     ): DataApiService {
         val client = OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .authenticator(authenticator)
+            .addNetworkInterceptor(NetworkInterceptor(retryManager))
             .build()
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)

@@ -1,12 +1,13 @@
 package com.minhdk.wefashion.di
 
-import android.util.Log
-import com.minhdk.wefashion.infrastructure.config.network.DataTokenManagerImpl
-import com.minhdk.wefashion.infrastructure.config.network.base.TokenFetcher
-import com.minhdk.wefashion.infrastructure.config.network.base.TokenManager
+import com.minhdk.wefashion.infrastructure.config.network.retry.InterceptorRetryManagerImpl
+import com.minhdk.wefashion.infrastructure.config.network.retry.base.RetryManager
+import com.minhdk.wefashion.infrastructure.config.network.token.DataTokenFetcherImpl
+import com.minhdk.wefashion.infrastructure.config.network.token.DataTokenManagerImpl
+import com.minhdk.wefashion.infrastructure.config.network.token.base.TokenFetcher
+import com.minhdk.wefashion.infrastructure.config.network.token.base.TokenManager
 import com.minhdk.wefashion.infrastructure.model.token.DataAccessToken
 import com.minhdk.wefashion.infrastructure.remote.AuthenticationService
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,16 +29,17 @@ class ConfigModule {
     fun provideDataTokenFetcher(
         authService: AuthenticationService
     ): TokenFetcher<DataAccessToken, Nothing> {
-        return object: TokenFetcher<DataAccessToken, Nothing> {
-            override fun fetch(body: Nothing?): DataAccessToken? {
-                return authService.fetchToken().execute().body()?.data
-            }
-        }
+        return DataTokenFetcherImpl(authService)
     }
 
     @Provides
     @Singleton
     fun provideTokenManager(@DataToken fetcher: TokenFetcher<DataAccessToken, Nothing>): TokenManager<DataAccessToken> {
         return DataTokenManagerImpl(fetcher)
+    }
+
+    @Provides
+    fun provideInterceptorRetryManager(): RetryManager {
+        return InterceptorRetryManagerImpl()
     }
 }
