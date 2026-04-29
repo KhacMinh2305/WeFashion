@@ -25,7 +25,7 @@ data class NavBarItemConfig(
     val containerShape: Shape,
     val iconSize: Dp = 28.dp,
     val labelSize: TextUnit = TextUnit.Unspecified,
-    val height: Dp = 110.dp,
+    val height: Dp = 95.dp,
     val pInside: Dp = 5.dp
 )
 

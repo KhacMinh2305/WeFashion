@@ -26,5 +26,6 @@ private fun <T> createNavBarItem(pos: Int, type: NavBarItemResource, ic: T, labe
 fun appNavBarItemConfig() = singleColorNavBarItemConfig(
     selected = Color.Magenta,
     unselected = Color.LightGray,
-    containerAlpha = 0.35f,
-    bordered = 12.dp)
+    containerAlpha = 0.15f,
+    bordered = 12.dp
+)
