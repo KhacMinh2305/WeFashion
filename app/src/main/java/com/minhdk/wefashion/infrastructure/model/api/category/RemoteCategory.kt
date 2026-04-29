@@ -1,4 +1,4 @@
-package com.minhdk.wefashion.infrastructure.model.category
+package com.minhdk.wefashion.infrastructure.model.api.category
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
