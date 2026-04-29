@@ -12,7 +12,9 @@ abstract class RetryManagerImpl: RetryManager {
 
     open val isSuspend = false
 
-    open val codes = emptyList<Int>()
+    open val appliedCodes = emptyList<Int>()
+
+    open val deniedCodes = emptyList<Int>()
 
     private val retryMap = ConcurrentHashMap<String, Int>()
 
@@ -33,9 +35,10 @@ abstract class RetryManagerImpl: RetryManager {
     }
 
     override fun canRetry(url: String, code: Int?, delay: Boolean): Boolean {
-        if(codes.isNotEmpty() && !codes.contains(code)) return false
+        if(deniedCodes.contains(code)) return false
+        if(appliedCodes.isNotEmpty() && !appliedCodes.contains(code)) return false
         return retryMap[url]?.let {
-            if(it < retryCount) {
+            if(it <= retryCount) {
                 retryMap[url] = it + 1
                 if(delay) delay()
                 true
@@ -45,15 +48,17 @@ abstract class RetryManagerImpl: RetryManager {
                 false
             }
         } ?: run {
-            retryMap[url] = 0
+            retryMap[url] = 1
             if(delay) delay()
-            false
+            true
         }
     }
 
     override suspend fun canRetrySuspend(url: String, code: Int?, delay: Boolean): Boolean {
+        if(deniedCodes.contains(code)) return false
+        if(appliedCodes.isNotEmpty() && !appliedCodes.contains(code)) return false
         return retryMap[url]?.let {
-            if(it < retryCount) {
+            if(it <= retryCount) {
                 retryMap[url] = it + 1
                 if(delay) delaySuspend()
                 true
@@ -63,9 +68,9 @@ abstract class RetryManagerImpl: RetryManager {
                 false
             }
         } ?: run {
-            retryMap[url] = 0
+            retryMap[url] = 1
             if(delay) delaySuspend()
-            false
+            true
         }
     }
 

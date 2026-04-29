@@ -4,6 +4,8 @@ import com.minhdk.wefashion.infrastructure.config.network.retry.base.RetryManage
 
 class InterceptorRetryManagerImpl: RetryManagerImpl() {
 
+    override val deniedCodes = listOf(401)
+
     override fun delay() {
         Thread.sleep(delayRetry)
     }

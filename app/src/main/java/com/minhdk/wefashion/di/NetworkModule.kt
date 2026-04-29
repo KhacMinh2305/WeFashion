@@ -2,8 +2,11 @@ package com.minhdk.wefashion.di
 
 import com.minhdk.wefashion.BuildConfig
 import com.minhdk.wefashion.infrastructure.config.network.authenticator.DataAuthenticator
+import com.minhdk.wefashion.infrastructure.config.network.interceptor.AppInterceptor
 import com.minhdk.wefashion.infrastructure.config.network.interceptor.NetworkInterceptor
 import com.minhdk.wefashion.infrastructure.config.network.retry.base.RetryManager
+import com.minhdk.wefashion.infrastructure.config.network.token.base.TokenManager
+import com.minhdk.wefashion.infrastructure.model.token.DataAccessToken
 import com.minhdk.wefashion.infrastructure.remote.AuthenticationService
 import com.minhdk.wefashion.infrastructure.remote.DataApiService
 import dagger.Module
@@ -39,6 +42,7 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideDataService(
+        tokenManager: TokenManager<DataAccessToken>,
         authenticator: DataAuthenticator,
         retryManager: RetryManager
     ): DataApiService {
@@ -48,6 +52,7 @@ class NetworkModule {
             .writeTimeout(60, TimeUnit.SECONDS)
             .authenticator(authenticator)
             .addNetworkInterceptor(NetworkInterceptor(retryManager))
+            .addInterceptor(AppInterceptor(tokenManager))
             .build()
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
