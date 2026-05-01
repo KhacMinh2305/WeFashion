@@ -1,13 +1,19 @@
 package com.minhdk.wefashion.di
 
+import com.minhdk.wefashion.domain.repository.AccountRepository
 import com.minhdk.wefashion.domain.repository.AuthenticationRepository
 import com.minhdk.wefashion.domain.repository.CategoryRepository
+import com.minhdk.wefashion.infrastructure.datasource.account.local.LocalAccountDataSource
+import com.minhdk.wefashion.infrastructure.datasource.account.local.LocalAccountDataSourceImpl
+import com.minhdk.wefashion.infrastructure.datasource.account.remote.RemoteAccountDataSource
+import com.minhdk.wefashion.infrastructure.datasource.account.remote.RemoteAccountDataSourceImpl
 import com.minhdk.wefashion.infrastructure.datasource.authentication.RemoteAuthenticationDataSource
 import com.minhdk.wefashion.infrastructure.datasource.authentication.RemoteAuthenticationDataSourceImpl
 import com.minhdk.wefashion.infrastructure.datasource.category.local.LocalCategoryDataSource
 import com.minhdk.wefashion.infrastructure.datasource.category.local.LocalCategoryDataSourceImpl
 import com.minhdk.wefashion.infrastructure.datasource.category.remote.RemoteCategoryDataSource
 import com.minhdk.wefashion.infrastructure.datasource.category.remote.RemoteCategoryDataSourceImpl
+import com.minhdk.wefashion.infrastructure.repositoryimpl.AccountRepositoryImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.AuthenticationRepositoryImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.CategoryRepositoryImpl
 import dagger.Binds
@@ -37,6 +43,24 @@ abstract class BindingModule {
     abstract fun provideLocalCategoryDataSource(
         impl: LocalCategoryDataSourceImpl
     ): LocalCategoryDataSource
+
+    @Binds
+    @Singleton
+    abstract fun provideLocalAccountDataSource(
+        impl: LocalAccountDataSourceImpl
+    ): LocalAccountDataSource
+
+    @Binds
+    @Singleton
+    abstract fun provideRemoteAccountDataSource(
+        impl: RemoteAccountDataSourceImpl
+    ): RemoteAccountDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAccountRepository(
+        impl: AccountRepositoryImpl
+    ): AccountRepository
 
     @Binds
     @Singleton

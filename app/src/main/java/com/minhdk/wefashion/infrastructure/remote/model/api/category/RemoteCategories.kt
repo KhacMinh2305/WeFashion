@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class RemoteCategories(
     @SerializedName("categories")
     @Expose
-    val categories: List<com.minhdk.wefashion.infrastructure.remote.model.api.category.RemoteCategory>
+    val categories: List<RemoteCategory>
 )

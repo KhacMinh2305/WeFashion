@@ -1,4 +1,4 @@
-package com.minhdk.wefashion.infrastructure.remote.model.api.account.request
+package com.minhdk.wefashion.infrastructure.remote.model.api.address.request
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

@@ -1,0 +1,70 @@
+- Goal: add a new API module end-to-end (service + models + data sources + repository + DI + Room).
+
+1) Read API docs
+- Locate the exact section in Documentation.md.
+- For each endpoint, record: HTTP method, path, query/path params, request body fields, and response data shape.
+- Note if response "data" can be null.
+
+2) Create request/response models (remote layer)
+- Location: app/src/main/java/com/minhdk/wefashion/infrastructure/remote/model/api/<module>/request|response
+- Naming convention:
+  - Request: Request[MethodName] (example: RequestLoginAccount)
+  - Response: Response[ObjectType] (example: ResponseAccount)
+  - Nested objects: Response[Parent][Child] (example: ResponseAccountInfo)
+- Use Gson annotations:
+  - @SerializedName("json_field") and @Expose for every field.
+- Keep data classes minimal and reflect the API JSON exactly.
+- All properties of a network response object must be nullable.
+
+3) Define Retrofit sub-service
+- Location: app/src/main/java/com/minhdk/wefashion/infrastructure/remote/api/details/<Module>ApiService.kt
+- Each endpoint is a suspend function.
+- Use @GET/@POST/@PUT/@DELETE with correct path and @Body/@Query/@Path.
+- Return type: BaseResponse<ResponseType> to match the API's "data" payload.
+
+4) Aggregate service into DataApiService
+- Add the new sub-service interface to DataApiService so the app uses a single injected API service.
+
+5) Create Room entities and DAOs (if local storage is required)
+- Entity location: app/src/main/java/com/minhdk/wefashion/infrastructure/database/room/entity
+- DAO location: app/src/main/java/com/minhdk/wefashion/infrastructure/database/room/dao
+- Rule: PK fields must NOT be auto-generated.
+- Insert functions should return Long (or List<Long> for bulk inserts).
+- Update WeFashionDatabase:
+  - Add entity classes to @Database(entities = [...])
+  - Add abstract DAO getters
+  - Bump version when schema changes
+
+6) Create mappers (remote -> entity)
+- Location: app/src/main/java/com/minhdk/wefashion/infrastructure/mapper
+- Use extension functions to map Response/Remote models into Room entities.
+
+7) Implement data sources
+- Remote data source:
+  - Location: infrastructure/datasource/<module>/remote
+  - Interface returns response models (nullable if data can be null).
+  - Impl uses DataApiService and unwraps BaseResponse.data.
+  - Wrap network calls with withContext(Dispatchers.IO).
+- Local data source (if needed):
+  - Location: infrastructure/datasource/<module>/local
+  - Interface exposes Room operations.
+  - Impl uses Dao(s) and withContext(Dispatchers.IO).
+
+8) Implement repository
+- Domain interface location: domain/repository
+- Implementation location: infrastructure/repositoryimpl
+- All methods returning data must return RequestResult<T>.
+- Wrap logic in try/catch and map to RequestResult.Success/Error.
+- If needed, insert data to Room via local data source.
+
+9) Bind dependencies in DI
+- AppModule (Providers): expose new Dao(s).
+- BindingModule (Binds): bind data sources and repository implementations.
+
+10) Validate
+- Run a compile task to ensure Room schema and DI wiring are correct.
+- Fix any missing imports or mismatched types.
+
+Notes
+- Keep file/identifier names ASCII.
+- Use concise comments only when logic is non-obvious.

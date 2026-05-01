@@ -3,9 +3,11 @@ package com.minhdk.wefashion.infrastructure.remote.model.api.account.response
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class RemoteDeleteAddressResponse(
-    @SerializedName("message")
+data class ResponseForgotPasswordValidation(
+    @SerializedName("is_valid")
     @Expose
-    val message: String
+    val isValid: Boolean?,
+    @SerializedName("Detail")
+    @Expose
+    val detail: String?
 )
-

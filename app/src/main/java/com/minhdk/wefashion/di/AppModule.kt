@@ -3,7 +3,9 @@ package com.minhdk.wefashion.di
 import android.content.Context
 import androidx.room.Room
 import com.minhdk.wefashion.infrastructure.database.room.WeFashionDatabase
+import com.minhdk.wefashion.infrastructure.database.room.dao.DaoAccount
 import com.minhdk.wefashion.infrastructure.database.room.dao.DaoCategory
+import com.minhdk.wefashion.infrastructure.database.room.dao.DaoUser
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,10 +21,10 @@ class AppModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): WeFashionDatabase {
         return Room.databaseBuilder(
-            context,
-            WeFashionDatabase::class.java,
-            "wefashiondatabase"
-        ).build()
+                context,
+                WeFashionDatabase::class.java,
+                "wefashiondatabase"
+            ).fallbackToDestructiveMigration(true).build()
     }
 
     @Provides
@@ -31,6 +33,22 @@ class AppModule {
         db: WeFashionDatabase
     ): DaoCategory {
         return db.daoCategory()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDaoAccount(
+        db: WeFashionDatabase
+    ): DaoAccount {
+        return db.daoAccount()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDaoUser(
+        db: WeFashionDatabase
+    ): DaoUser {
+        return db.daoUser()
     }
 
 }

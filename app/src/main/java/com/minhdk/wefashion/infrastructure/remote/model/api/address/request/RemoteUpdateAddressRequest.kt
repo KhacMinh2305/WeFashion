@@ -1,12 +1,9 @@
-package com.minhdk.wefashion.infrastructure.remote.model.api.account.response
+package com.minhdk.wefashion.infrastructure.remote.model.api.address.request
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class RemoteAddress(
-    @SerializedName("id")
-    @Expose
-    val id: Int,
+data class RemoteUpdateAddressRequest(
     @SerializedName("name")
     @Expose
     val name: String,

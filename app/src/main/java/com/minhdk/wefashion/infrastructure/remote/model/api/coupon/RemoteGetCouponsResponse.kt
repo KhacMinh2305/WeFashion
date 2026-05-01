@@ -1,4 +1,4 @@
-package com.minhdk.wefashion.infrastructure.remote.model.api.coupon.response
+package com.minhdk.wefashion.infrastructure.remote.model.api.coupon
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

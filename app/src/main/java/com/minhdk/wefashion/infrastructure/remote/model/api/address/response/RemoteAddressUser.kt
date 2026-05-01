@@ -1,4 +1,4 @@
-package com.minhdk.wefashion.infrastructure.remote.model.api.account.response
+package com.minhdk.wefashion.infrastructure.remote.model.api.address.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -6,21 +6,21 @@ import com.google.gson.annotations.SerializedName
 data class RemoteAddressUser(
     @SerializedName("id")
     @Expose
-    val id: Int,
+    val id: Int?,
     @SerializedName("name")
     @Expose
-    val name: String,
+    val name: String?,
     @SerializedName("avatar_url")
     @Expose
-    val avatarUrl: String,
+    val avatarUrl: String?,
     @SerializedName("email")
     @Expose
-    val email: String,
+    val email: String?,
     @SerializedName("phone_number")
     @Expose
-    val phoneNumber: String,
+    val phoneNumber: String?,
     @SerializedName("bio")
     @Expose
-    val bio: String
+    val bio: String?
 )
 

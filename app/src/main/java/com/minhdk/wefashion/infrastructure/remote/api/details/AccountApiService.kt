@@ -1,36 +1,42 @@
 package com.minhdk.wefashion.infrastructure.remote.api.details
 
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RemoteCreateAddressRequest
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RemoteUpdateAddressRequest
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.RemoteAddress
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.RemoteAddressList
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.RemoteDeleteAddressResponse
+import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestChangePassword
+import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestForgotPassword
+import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestForgotPasswordValidate
+import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestLoginAccount
+import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestRegisterAccount
+import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.ResponseAccount
+import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.ResponseChangePassword
+import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.ResponseForgotPasswordCredential
+import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.ResponseForgotPasswordValidation
 import com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse
 import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface AccountApiService {
 
-    @GET("/api/address/user/{id}")
-    suspend fun getAddressesByUserId(@Path("id") userId: Int): com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse<com.minhdk.wefashion.infrastructure.remote.model.api.account.response.RemoteAddressList>
+    @POST("/api/account/register")
+    suspend fun registerAccount(
+        @Body body: RequestRegisterAccount
+    ): BaseResponse<ResponseAccount>
 
-    @GET("/api/address/{id}")
-    suspend fun getAddressById(@Path("id") addressId: Int): com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse<com.minhdk.wefashion.infrastructure.remote.model.api.account.response.RemoteAddress>
+    @POST("/api/account/login")
+    suspend fun loginAccount(
+        @Body body: RequestLoginAccount
+    ): BaseResponse<ResponseAccount>
 
-    @POST("/api/address/create")
-    suspend fun createAddress(@Body body: com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RemoteCreateAddressRequest): com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse<com.minhdk.wefashion.infrastructure.remote.model.api.account.response.RemoteAddress>
+    @POST("/api/account/forgot-password")
+    suspend fun forgotPassword(
+        @Body body: RequestForgotPassword
+    ): BaseResponse<ResponseForgotPasswordCredential>
 
-    @PUT("/api/address/update")
-    suspend fun updateAddress(
-        @Query("address_id") addressId: Int,
-        @Body body: com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RemoteUpdateAddressRequest
-    ): com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse<com.minhdk.wefashion.infrastructure.remote.model.api.account.response.RemoteAddress>
+    @POST("/api/account/forgot-password/validate")
+    suspend fun validateForgotPassword(
+        @Body body: RequestForgotPasswordValidate
+    ): BaseResponse<ResponseForgotPasswordValidation>
 
-    @DELETE("/api/address/{id}/delete")
-    suspend fun deleteAddress(@Path("id") addressId: Int): com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse<com.minhdk.wefashion.infrastructure.remote.model.api.account.response.RemoteDeleteAddressResponse>
+    @POST("/api/account/change-password")
+    suspend fun changePassword(
+        @Body body: RequestChangePassword
+    ): BaseResponse<ResponseChangePassword>
 }
