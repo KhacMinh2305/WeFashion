@@ -1,8 +1,8 @@
 package com.minhdk.wefashion.infrastructure.repositoryimpl
 import com.minhdk.wefashion.domain.data.RequestResult
-import com.minhdk.wefashion.domain.repository.authentication.AuthenticationRepository
+import com.minhdk.wefashion.domain.repository.AuthenticationRepository
 import com.minhdk.wefashion.infrastructure.datasource.authentication.RemoteAuthenticationDataSource
-import com.minhdk.wefashion.infrastructure.model.token.DataAccessToken
+import com.minhdk.wefashion.infrastructure.remote.model.token.DataAccessToken
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class AuthenticationRepositoryImpl @Inject constructor(
     private val remoteSource: RemoteAuthenticationDataSource
 ): AuthenticationRepository {
-    override suspend fun getToken(): RequestResult<DataAccessToken?> {
+    override suspend fun getToken(): RequestResult<com.minhdk.wefashion.infrastructure.remote.model.token.DataAccessToken?> {
         return try {
             RequestResult.Success(remoteSource.getToken())
         } catch (e: Exception) {

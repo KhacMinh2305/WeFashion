@@ -1,14 +1,13 @@
 package com.minhdk.wefashion.infrastructure.config.network.token
 
-import com.minhdk.wefashion.di.ConfigModule
+import com.minhdk.wefashion.di.network.ConfigModule
 import com.minhdk.wefashion.infrastructure.config.network.token.base.BaseTokenManagerImpl
 import com.minhdk.wefashion.infrastructure.config.network.token.base.TokenFetcher
-import com.minhdk.wefashion.infrastructure.model.token.DataAccessToken
 import javax.inject.Inject
 
 class DataTokenManagerImpl @Inject constructor(
-    @ConfigModule.DataToken fetcher: TokenFetcher<DataAccessToken, Nothing>
-): BaseTokenManagerImpl<DataAccessToken, Nothing>(fetcher) {
+    @ConfigModule.DataToken fetcher: TokenFetcher<com.minhdk.wefashion.infrastructure.remote.model.token.DataAccessToken, Nothing>
+): BaseTokenManagerImpl<com.minhdk.wefashion.infrastructure.remote.model.token.DataAccessToken, Nothing>(fetcher) {
 
     override val tag = "DataTokenManagerImpl"
 

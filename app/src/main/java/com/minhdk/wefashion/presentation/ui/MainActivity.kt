@@ -2,42 +2,32 @@ package com.minhdk.wefashion.presentation.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocalActivity
-import androidx.compose.material.icons.filled.Preview
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.LineHeightStyle
-import com.minhdk.wefashion.infrastructure.remote.DataApiService
+import androidx.lifecycle.lifecycleScope
+import com.minhdk.wefashion.domain.data.RequestResult
+import com.minhdk.wefashion.domain.repository.CategoryRepository
+import com.minhdk.wefashion.infrastructure.remote.api.DataApiService
 import com.minhdk.wefashion.presentation.ui.common.BaseButton
-import com.minhdk.wefashion.presentation.ui.common.BaseInputText
 import com.minhdk.wefashion.presentation.ui.navigation.appNavBarItemConfig
 import com.minhdk.wefashion.presentation.ui.navigation.base.AppBottomBar
-import com.minhdk.wefashion.presentation.ui.navigation.base.singleColorNavBarItemConfig
 import com.minhdk.wefashion.presentation.ui.navigation.navigationItems
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
-import com.tomtom.sdk.init.TomTomSdk
-import com.tomtom.sdk.location.GeoPoint
-import com.tomtom.sdk.map.display.MapLocationInfrastructure
-import com.tomtom.sdk.map.display.camera.InitialCameraOptions
-import com.tomtom.sdk.map.display.compose.TomTomMap
-import com.tomtom.sdk.map.display.compose.model.MapDisplayInfrastructure
-import com.tomtom.sdk.map.display.compose.state.rememberMapViewState
+import com.minhdk.wefashion.util.helper.logD
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -67,19 +57,6 @@ class MainActivity : ComponentActivity() {
                         ) { position -> selectedPos = position }
                     }
                 ) { _ ->
-
-                    BaseButton(
-                        text = "Create Account",
-                        onClick = { /* handle */ },
-                        enabled = true,
-                        modifier = Modifier
-                            .fillMaxWidth(),
-
-                        backgroundColor = Color(0xFF5B5BD6),
-                        disabledBackgroundColor = Color(0xFFBDBDF5),
-                        contentColor = Color.White,
-                        disabledContentColor = Color.White
-                    )
 
                 }
             }
