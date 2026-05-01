@@ -25,7 +25,7 @@ data class NavBarItemConfig(
     val containerShape: Shape,
     val iconSize: Dp = 28.dp,
     val labelSize: TextUnit = TextUnit.Unspecified,
-    val height: Dp = 95.dp,
+    val height: Dp = 100.dp,
     val pInside: Dp = 5.dp
 )
 
@@ -34,7 +34,15 @@ fun defaultNavBarConfig() = NavbarConfig(
     bgShape = RoundedCornerShape(0.dp)
 )
 
-fun singleColorNavBarItemConfig(selected: Color, unselected: Color, containerAlpha: Float, bordered: Dp) = NavBarItemConfig(
+fun singleColorNavBarItemConfig(
+    selected: Color,
+    unselected: Color,
+    containerAlpha:
+    Float,
+    bordered: Dp,
+    height: Dp = 100.dp,
+    pInside: Dp = 5.dp
+) = NavBarItemConfig(
     selectedIcon = selected,
     unselectedIcon = unselected,
     selectedLabel = selected,
@@ -42,5 +50,7 @@ fun singleColorNavBarItemConfig(selected: Color, unselected: Color, containerAlp
     indicator = Color.Transparent,
     selectedContainer = selected.copy(alpha = containerAlpha),
     unselectedContainer = Color.Transparent,
-    containerShape = RoundedCornerShape(bordered)
+    containerShape = RoundedCornerShape(bordered),
+    height = height,
+    pInside = pInside
 )

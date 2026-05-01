@@ -21,22 +21,22 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 private fun NavBarIcon(item: NavBarItem<*>) {
-    when(item.iconType) {
-        NavBarItemResource.RESOURCE_INT -> {
+    when(item.icon) {
+        is Int -> {
             Icon(
                 painter = painterResource(item.icon as Int),
                 contentDescription = null,
                 modifier = Modifier.size(25.dp)
             )
         }
-        NavBarItemResource.IMAGE_VECTOR -> {
+        is ImageVector -> {
             Icon(
                 imageVector = item.icon as ImageVector,
                 contentDescription = null,
                 modifier = Modifier.size(25.dp)
             )
         }
-        NavBarItemResource.IMAGE_BITMAP -> {
+        is ImageBitmap -> {
             Icon(
                 bitmap = item.icon as ImageBitmap,
                 contentDescription = null,
