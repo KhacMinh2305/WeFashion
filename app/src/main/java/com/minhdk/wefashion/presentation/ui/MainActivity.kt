@@ -1,33 +1,50 @@
 package com.minhdk.wefashion.presentation.ui
 
+import android.R.attr.textSize
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.lifecycleScope
-import com.minhdk.wefashion.domain.data.RequestResult
-import com.minhdk.wefashion.domain.repository.CategoryRepository
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NoOpNavigator
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.minhdk.wefashion.infrastructure.remote.api.DataApiService
-import com.minhdk.wefashion.presentation.ui.common.BaseButton
+import com.minhdk.wefashion.presentation.ui.navigation.Authentication
+import com.minhdk.wefashion.presentation.ui.navigation.Contact
+import com.minhdk.wefashion.presentation.ui.navigation.Home
+import com.minhdk.wefashion.presentation.ui.navigation.Onboarding
+import com.minhdk.wefashion.presentation.ui.navigation.Order
+import com.minhdk.wefashion.presentation.ui.navigation.Setting
 import com.minhdk.wefashion.presentation.ui.navigation.appNavBarItemConfig
 import com.minhdk.wefashion.presentation.ui.navigation.base.AppBottomBar
 import com.minhdk.wefashion.presentation.ui.navigation.navigationItems
+import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScreen
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
-import com.minhdk.wefashion.util.helper.logD
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -42,24 +59,178 @@ class MainActivity : ComponentActivity() {
         setContent {
             WeFashionTheme {
 
-                var selectedPos by remember { mutableIntStateOf(0) }
-
-                var text by remember { mutableStateOf("") }
+                val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
 
                 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        AppBottomBar(
-                            items = navigationItems,
-                            itemConfig = appNavBarItemConfig(),
-                            isSelected = { it == selectedPos }
-                        ) { position -> selectedPos = position }
+                        val tabPos = getNavbarCurrentTabPosition(navBackStackEntry)
+                        if(tabPos in 0 until navigationItems.size) {
+                            AppBottomBar(
+                                items = navigationItems,
+                                itemConfig = appNavBarItemConfig(),
+                                isSelected = { it == tabPos }
+                            ) {
+                                handleUserNavigateTab(navController, it)
+                            }
+                        }
                     }
-                ) { _ ->
-
+                ) { paddingValues ->
+                    SetupNavigation(navController, paddingValues)
                 }
             }
+        }
+    }
+
+    private fun NavGraphBuilder.onboardingFlow(navController: NavHostController, contentPadding: PaddingValues) {
+        navigation<Onboarding.OnboardingFlow>(startDestination = Onboarding.Splash) {
+            composable<Onboarding.Splash> {
+                SplashScreen(contentPadding) {
+                    navigateOnboarding(navController, it)
+                }
+            }
+            composable<Onboarding.Introduce> {
+
+            }
+        }
+    }
+
+    private fun NavGraphBuilder.authenticationFlow(navController: NavHostController, contentPadding: PaddingValues) {
+        navigation<Authentication.AuthFlow>(startDestination = Authentication.Login) {
+            composable<Authentication.Login> {
+                TestScreen("Login")
+            }
+            composable<Authentication.Register> {
+                TestScreen("Register")
+            }
+            composable<Authentication.ForgotPassword> {
+                TestScreen("ForgotPassword")
+            }
+            composable<Authentication.Verification> {
+                TestScreen("Verification")
+            }
+        }
+    }
+
+    private fun NavGraphBuilder.appFlow(navController: NavHostController, contentPadding: PaddingValues) {
+        appFlowHome(navController)
+        appFlowOrder(navController)
+        appFlowContact(navController)
+        appFlowSetting(navController)
+    }
+
+    private fun NavGraphBuilder.appFlowHome(navController: NavHostController) {
+        navigation<Home.HomeFlow>(startDestination = Home.Main) {
+            composable<Home.Main> {
+
+            }
+            composable<Home.Profile> {}
+            composable<Home.Search> {}
+            composable<Home.Notification> {}
+            composable<Home.ListProducts> {}
+        }
+    }
+
+    private fun NavGraphBuilder.appFlowOrder(navController: NavHostController) {
+        navigation<Order.OrderFlow>(startDestination = Order.MyOrder) {
+            composable<Order.MyOrder> {}
+            composable<Order.OrderDetail> {}
+            composable<Order.OrderTracking> {}
+            composable<Order.Cart> {}
+        }
+    }
+
+    private fun NavGraphBuilder.appFlowContact(navController: NavHostController) {
+        navigation<Contact.ContactFlow>(startDestination = Contact.Message) {
+            composable<Contact.Message> {}
+            composable<Contact.Assistant> {}
+        }
+    }
+
+    private fun NavGraphBuilder.appFlowSetting(navController: NavHostController) {
+        navigation<Setting.SettingFlow>(startDestination = Setting.General) {
+            composable<Setting.General> {}
+        }
+    }
+
+    @Composable
+    private fun SetupNavigation(navController: NavHostController, contentPadding: PaddingValues) {
+        NavHost(navController = navController, startDestination = Onboarding.OnboardingFlow) {
+            onboardingFlow(navController, contentPadding)
+            authenticationFlow(navController, contentPadding)
+            appFlow(navController, contentPadding)
+        }
+    }
+
+    private fun getNavbarCurrentTabPosition(entry: NavBackStackEntry?): Int {
+        val destination = (entry ?: return - 1 ).destination
+        var pos = -1
+        when {
+            destination.hasRoute<Home.Main>() -> pos = 0
+            destination.hasRoute<Home.Profile>() -> pos = 0
+            destination.hasRoute<Home.Search>() -> pos = 0
+            destination.hasRoute<Home.Notification>() -> pos = 0
+            destination.hasRoute<Home.ListProducts>() -> pos = 0
+
+            destination.hasRoute<Order.MyOrder>() -> pos = 1
+            destination.hasRoute<Order.OrderDetail>() -> pos = 1
+            destination.hasRoute<Order.OrderTracking>() -> pos = 1
+            destination.hasRoute<Order.Cart>() -> pos = 1
+
+            destination.hasRoute<Contact.Message>() -> pos = 2
+            destination.hasRoute<Contact.Assistant>() -> pos = 2
+
+            destination.hasRoute<Setting.General>() -> pos = 3
+        }
+        return pos
+    }
+
+    private fun handleUserNavigateTab(navController: NavHostController, position: Int) {
+        if (position !in 0 until navigationItems.size) return
+        val tabRoute = when(position) {
+            0 -> Home.HomeFlow
+            1 -> Order.OrderFlow
+            2 -> Contact.ContactFlow
+            3 -> Setting.SettingFlow
+            else -> return
+        }
+
+        navController.navigate(tabRoute) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    @Composable
+    private fun TestScreen(title: String) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize().padding(12.dp).background(Color.Black)
+        ) {
+            Text(
+                color = Color.White,
+                text = title,
+                fontSize = 20.sp
+            )
+        }
+    }
+
+    private fun navigateOnboarding(navController: NavHostController, route: Onboarding) {
+        when(route) {
+            Onboarding.Introduce -> {
+                navController.navigate(Onboarding.Introduce)
+            }
+            Onboarding.Skip -> {
+                navController.navigate(Authentication.Login) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
+            else -> {}
         }
     }
 }

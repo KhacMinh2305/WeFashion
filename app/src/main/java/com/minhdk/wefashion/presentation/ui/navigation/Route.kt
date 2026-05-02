@@ -3,9 +3,27 @@ package com.minhdk.wefashion.presentation.ui.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Authentication {
+sealed class Onboarding {
+
     @Serializable
-    object Onboarding: Authentication()
+    object OnboardingFlow: Onboarding()
+
+    @Serializable
+    object Splash: Onboarding()
+
+    @Serializable
+    object Introduce: Onboarding()
+
+    @Serializable
+    object Skip: Onboarding()
+
+}
+
+@Serializable
+sealed class Authentication {
+
+    @Serializable
+    object AuthFlow: Authentication()
 
     @Serializable
     object Register: Authentication()
@@ -13,6 +31,7 @@ sealed class Authentication {
     @Serializable
     object Login: Authentication()
 
+    @Serializable
     object ForgotPassword: Authentication()
 
     @Serializable
@@ -21,6 +40,9 @@ sealed class Authentication {
 
 @Serializable
 sealed class Home {
+
+    @Serializable
+    object HomeFlow: Home()
 
     @Serializable
     object Main: Home()
@@ -42,6 +64,9 @@ sealed class Home {
 sealed class Order {
 
     @Serializable
+    object OrderFlow: Order()
+
+    @Serializable
     object MyOrder: Order()
 
     @Serializable
@@ -59,13 +84,21 @@ sealed class Order {
 sealed class Contact {
 
     @Serializable
+    object ContactFlow: Contact()
+
+    @Serializable
     object Message: Contact()
 
+    @Serializable
     object Assistant: Contact()
 }
 
 @Serializable
 sealed class Setting {
+
+    @Serializable
+    object SettingFlow: Setting()
+
     @Serializable
     object General: Setting()
 }

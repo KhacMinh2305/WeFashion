@@ -3,6 +3,9 @@ package com.minhdk.wefashion.di
 import com.minhdk.wefashion.domain.repository.AccountRepository
 import com.minhdk.wefashion.domain.repository.AuthenticationRepository
 import com.minhdk.wefashion.domain.repository.CategoryRepository
+import com.minhdk.wefashion.infrastructure.database.shared.AppSharedPref
+import com.minhdk.wefashion.infrastructure.database.shared.AppSharedPrefImpl
+import com.minhdk.wefashion.infrastructure.database.shared.base.SharedPrefImpl
 import com.minhdk.wefashion.infrastructure.datasource.account.local.LocalAccountDataSource
 import com.minhdk.wefashion.infrastructure.datasource.account.local.LocalAccountDataSourceImpl
 import com.minhdk.wefashion.infrastructure.datasource.account.remote.RemoteAccountDataSource
@@ -25,6 +28,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class BindingModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindAppSharedPref(impl: AppSharedPrefImpl): AppSharedPref
 
     @Binds
     @Singleton

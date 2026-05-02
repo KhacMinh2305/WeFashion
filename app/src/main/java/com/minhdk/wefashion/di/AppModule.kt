@@ -6,6 +6,8 @@ import com.minhdk.wefashion.infrastructure.database.room.WeFashionDatabase
 import com.minhdk.wefashion.infrastructure.database.room.dao.DaoAccount
 import com.minhdk.wefashion.infrastructure.database.room.dao.DaoCategory
 import com.minhdk.wefashion.infrastructure.database.room.dao.DaoUser
+import com.minhdk.wefashion.infrastructure.database.shared.base.SharedPref
+import com.minhdk.wefashion.infrastructure.database.shared.base.SharedPrefImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,6 +18,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+
+    @Provides
+    @Singleton
+    fun provideBaseSharedPref(
+        @ApplicationContext context: Context
+    ): SharedPref {
+        return SharedPrefImpl(context, "GENERAL_SHARED_PREF")
+    }
 
     @Provides
     @Singleton

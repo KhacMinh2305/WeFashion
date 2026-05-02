@@ -8,6 +8,9 @@ plugins {
     id("com.google.devtools.ksp")
     //firebase
     id("com.google.gms.google-services")
+
+    // navigation
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -84,9 +87,11 @@ dependencies {
     // hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     // Room
     implementation(libs.androidx.room.runtime)
