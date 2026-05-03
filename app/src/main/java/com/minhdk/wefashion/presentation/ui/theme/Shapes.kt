@@ -16,3 +16,5 @@ val rounded_14 = RoundedCornerShape(14.dp)
 val rounded_12 = RoundedCornerShape(12.dp)
 val rounded_10 = RoundedCornerShape(10.dp)
 val rounded_8  = RoundedCornerShape(8.dp)
+
+fun rounded(dp: Int) = RoundedCornerShape(dp.dp)

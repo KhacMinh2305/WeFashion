@@ -42,6 +42,7 @@ import com.minhdk.wefashion.presentation.ui.navigation.Setting
 import com.minhdk.wefashion.presentation.ui.navigation.appNavBarItemConfig
 import com.minhdk.wefashion.presentation.ui.navigation.base.AppBottomBar
 import com.minhdk.wefashion.presentation.ui.navigation.navigationItems
+import com.minhdk.wefashion.presentation.ui.screen.onboarding.introduce.IntroduceScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScreen
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -92,7 +93,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
             composable<Onboarding.Introduce> {
-
+                IntroduceScreen(contentPadding) {
+                    navigateOnboarding(navController, it)
+                }
             }
         }
     }

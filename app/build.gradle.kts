@@ -134,4 +134,6 @@ dependencies {
     // icons
     implementation("androidx.compose.material:material-icons-extended")
 
+    implementation("androidx.compose.foundation:foundation:1.11.0")
+
 }
