@@ -1,7 +1,9 @@
 package com.minhdk.wefashion.infrastructure.database.shared
 
-interface AppSharedPref {
+import com.minhdk.wefashion.infrastructure.database.shared.base.SharedPref
 
-    val firstOpenApp: Boolean
+interface AppSharedPref: SharedPref {
+
+    var firstOpenApp: Boolean
 
 }

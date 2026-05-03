@@ -5,10 +5,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class SharedPrefImpl @Inject constructor(
-    @ApplicationContext context: Context,
-    private val key: String
+abstract class SharedPrefImpl(
+    context: Context,
+    key: String
 ): SharedPref {
 
     private val sharedPref = context.getSharedPreferences(key, Context.MODE_PRIVATE)
@@ -66,4 +65,6 @@ class SharedPrefImpl @Inject constructor(
     override fun contains(key: String): Boolean {
         return sharedPref.contains(key)
     }
+
+    abstract fun doNoThing()
 }

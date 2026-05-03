@@ -2,12 +2,16 @@ package com.minhdk.wefashion.di
 
 import android.content.Context
 import androidx.room.Room
+import com.minhdk.wefashion.domain.repository.SharedPrefRepository
 import com.minhdk.wefashion.infrastructure.database.room.WeFashionDatabase
 import com.minhdk.wefashion.infrastructure.database.room.dao.DaoAccount
 import com.minhdk.wefashion.infrastructure.database.room.dao.DaoCategory
 import com.minhdk.wefashion.infrastructure.database.room.dao.DaoUser
+import com.minhdk.wefashion.infrastructure.database.shared.AppSharedPref
+import com.minhdk.wefashion.infrastructure.database.shared.AppSharedPrefImpl
 import com.minhdk.wefashion.infrastructure.database.shared.base.SharedPref
 import com.minhdk.wefashion.infrastructure.database.shared.base.SharedPrefImpl
+import com.minhdk.wefashion.infrastructure.repositoryimpl.SharedPrefRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,10 +25,10 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideBaseSharedPref(
+    fun provideAppSharedPref(
         @ApplicationContext context: Context
-    ): SharedPref {
-        return SharedPrefImpl(context, "GENERAL_SHARED_PREF")
+    ): AppSharedPref {
+        return AppSharedPrefImpl(context, "APP_SHARED_PREF")
     }
 
     @Provides
@@ -59,6 +63,14 @@ class AppModule {
         db: WeFashionDatabase
     ): DaoUser {
         return db.daoUser()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedRepository(
+        @ApplicationContext context: Context
+    ): SharedPrefRepository {
+        return SharedPrefRepositoryImpl(context)
     }
 
 }

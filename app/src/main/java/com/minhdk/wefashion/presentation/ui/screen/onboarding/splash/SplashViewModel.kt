@@ -2,6 +2,8 @@ package com.minhdk.wefashion.presentation.ui.screen.onboarding.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.minhdk.wefashion.domain.repository.SharedPrefRepository
+import com.minhdk.wefashion.domain.usecase.sharedpref.getFirstOpenAppUseCase
 import com.minhdk.wefashion.infrastructure.database.shared.AppSharedPref
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -12,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val sharedPref: AppSharedPref
+    private val sharedRepo: SharedPrefRepository
 ): ViewModel() {
 
     private val _nextState = Channel<Boolean>()
@@ -21,7 +23,9 @@ class SplashViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             delay(2000L)
-            _nextState.send(sharedPref.firstOpenApp)
+            getFirstOpenAppUseCase(sharedRepo) {
+                _nextState.send(it)
+            }
         }
     }
 
