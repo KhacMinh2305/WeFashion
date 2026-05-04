@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.minhdk.wefashion.domain.data.onboarding.DtoOnboarding
 import com.minhdk.wefashion.domain.repository.OnboardingRepository
 import com.minhdk.wefashion.domain.repository.SharedPrefRepository
+import com.minhdk.wefashion.domain.usecase.sharedpref.setFirstTravelOnboardingUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -13,5 +14,9 @@ class IntroduceViewModel @Inject constructor(
 ): ViewModel() {
 
     fun getOnboardingItems(): List<DtoOnboarding> = OnboardingRepository.getOnboardingItems()
+
+    fun saveUserTraveledOnboarding() {
+        setFirstTravelOnboardingUseCase(sharedRepo, false)
+    }
 
 }

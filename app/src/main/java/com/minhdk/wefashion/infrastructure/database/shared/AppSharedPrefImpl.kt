@@ -23,7 +23,7 @@ class AppSharedPrefImpl (
 
     override fun doNoThing() {}
 
-    override var firstOpenApp: Boolean
+    override var watchOnboarding: Boolean
         get() = getBoolean(FIRST_OPEN_APP, true)
         set(value) = putBoolean(FIRST_OPEN_APP, value)
 

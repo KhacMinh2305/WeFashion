@@ -3,20 +3,20 @@ package com.minhdk.wefashion.domain.usecase.sharedpref
 import com.minhdk.wefashion.domain.repository.SharedPrefRepository
 
 
-suspend fun getFirstOpenAppUseCase(
+suspend fun getFirstTravelOnboardingUseCase(
     sharedPref: SharedPrefRepository,
     action: suspend (Boolean) -> Unit
 ) {
     sharedPref.accessAppSharedPrefSuspend {
-        action.invoke(firstOpenApp)
+        action.invoke(watchOnboarding)
     }
 }
 
-fun setFirstOpenAppUseCase(
+fun setFirstTravelOnboardingUseCase(
     sharedPref: SharedPrefRepository,
     value: Boolean
 ) {
     sharedPref.accessAppSharedPref {
-        firstOpenApp = value
+        watchOnboarding = value
     }
 }

@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,9 +28,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun BaseInputText(
@@ -46,6 +48,11 @@ fun BaseInputText(
     showTrailingIcon: Boolean = true,
     trailingEnabled: Boolean = true,
     onTrailingClick: (() -> Unit)? = null,
+
+    // Input
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 
     // Colors
     textColor: Color,
@@ -90,7 +97,7 @@ fun BaseInputText(
                     Text(
                         text = placeholder,
                         color = placeholderColor,
-                        fontSize = 14.sp
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
 
@@ -98,10 +105,10 @@ fun BaseInputText(
                     value = value,
                     onValueChange = onValueChange,
                     singleLine = true,
-                    textStyle = TextStyle(
-                        color = textColor,
-                        fontSize = 14.sp
-                    ),
+                    keyboardOptions = keyboardOptions,
+                    keyboardActions = keyboardActions,
+                    visualTransformation = visualTransformation,
+                    textStyle = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

@@ -1,0 +1,39 @@
+Bây giờ tao sẽ giới thiệu qua cho mày về cấu trúc dự án để mày có thể làm việc được:
+- Đây là 1 dự án đặt quần áo, được thiết kế theo clean architecture và MVI. Dưới đây là từng
+thư mục và vài trò của chúng trong dự án này:
+
+1. design : Nơi chứa những ảnh design để cho AI xem và implement UI. Chúng được phân theo từng
+app flow.
+
+2. di : Nơi chứa những class thuộc về dependencies injection. Ở trong đây bao gồm 1 số các file
+như sau:
+- Thư mục network: Chứa các dependencies cho client network.
+- AppEntryPointAccessor.kt: Entry point để truy xuất các dependencies cần thiết cho ứng dụng.
+- AppModule.kt: Chứa những singleton dependencies cho app.
+- BindingModule.kt: Cung cấp binding cho các dependencies cần thiết.
+
+3. domain: Nơi chứa business logic của toàn bộ app:
+- data: Nơi chứa các dto phụ vụ cho app trong kiến trúc clean architecture.
+- repository: Nơi chứa các repository interface.
+- usecase: Chứa các use case cho tầng presentation sử dụng.
+
+4. infrastructure: Nơi chứa toàn bộ phần "backend" của app.
+- config: Chứa những config cho app, hiện tại chỉ mới có config của client.
+- database: Chứa thông tin về database, các dao, entity của database. Ngoài ra nó còn chứa các
+thông tin về shared pref, files manager (sau này sẽ thêm sau).
+- datasource: Là các datasource phân theo từng loại đối tượng, tuân theo mô hình MVVM và best practice
+của google về single source of truth. Nó chịu trách nhiệm tương tác trực tiếp với các nguồn data
+khởi nguồn. Thường thì sẽ có 2 loại datasource đối với mỗi repo đó là remote và local.
+- mapper: Chứa các mapper cho các object response từ remote với các object entity của room.
+- remote: Chứa các interface api services và các object response / request.
+- repositoryimpl: Là noi chứa các implementers của các interface repository ở bên tầng domain. Phải
+đặt chúng ở đây để không phá vỡ nguyên lý thiết kế của clean architecture.
+
+5. presentation: Đây là nơi chứa những components và logic liên quan đế UI và tương tác của user trong app.
+- receiver: Chứa các broadcast receiver trong app.
+- service: Chứa các services trong app.
+- ui: Chứa các thành phần liên quan đến ui. Trong này có một thư mục tên là screen, chính là
+để chứa code ui của các màn hình được phần theo từng app flow. Trong mỗi app flow lại chia nhỏ
+ra các package theo tên của màn hình. Trong 1 package của màn hình chứa 1 file là composable
+cấp screen của màn hình đó, một viewmodel tương ứng với màn, và có 1 packages con nữa thường
+tên là "component" chứa những UI nhỏ hơn.

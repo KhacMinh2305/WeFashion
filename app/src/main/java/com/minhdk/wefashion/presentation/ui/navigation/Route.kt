@@ -36,6 +36,9 @@ sealed class Authentication {
 
     @Serializable
     object Verification: Authentication()
+
+    @Serializable
+    object Skip: Authentication()
 }
 
 @Serializable

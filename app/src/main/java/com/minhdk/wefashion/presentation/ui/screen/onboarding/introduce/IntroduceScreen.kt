@@ -65,6 +65,7 @@ fun IntroduceScreen(
             contentColor = Background,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 20.dp)
         ) {
+            viewmodel.saveUserTraveledOnboarding()
             onNavigate.invoke(Onboarding.Skip)
         }
 

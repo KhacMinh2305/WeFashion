@@ -4,6 +4,6 @@ import com.minhdk.wefashion.infrastructure.database.shared.base.SharedPref
 
 interface AppSharedPref: SharedPref {
 
-    var firstOpenApp: Boolean
+    var watchOnboarding: Boolean
 
 }

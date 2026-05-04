@@ -24,8 +24,11 @@ import com.minhdk.wefashion.presentation.ui.theme.TextSecondary
 fun BaseButtonBox(
     modifier: Modifier = Modifier,
     txt: String,
+    enabled: Boolean = true,
     bgColor: Color,
+    disabledBgColor: Color = DisableButton,
     contentColor: Color,
+    disabledContentColor: Color = TextSecondary,
     onClick: () -> Unit
 ) {
     Box(
@@ -33,8 +36,11 @@ fun BaseButtonBox(
     ) {
         BaseButton(
             text = txt,
+            enabled = enabled,
             backgroundColor = bgColor,
+            disabledBackgroundColor = disabledBgColor,
             contentColor = contentColor,
+            disabledContentColor = disabledContentColor,
             onClick = onClick
         )
     }

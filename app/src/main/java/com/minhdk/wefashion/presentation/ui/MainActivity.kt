@@ -42,6 +42,7 @@ import com.minhdk.wefashion.presentation.ui.navigation.Setting
 import com.minhdk.wefashion.presentation.ui.navigation.appNavBarItemConfig
 import com.minhdk.wefashion.presentation.ui.navigation.base.AppBottomBar
 import com.minhdk.wefashion.presentation.ui.navigation.navigationItems
+import com.minhdk.wefashion.presentation.ui.screen.authentication.login.LoginScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.introduce.IntroduceScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScreen
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
@@ -88,14 +89,10 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.onboardingFlow(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Onboarding.OnboardingFlow>(startDestination = Onboarding.Splash) {
             composable<Onboarding.Splash> {
-                SplashScreen(contentPadding) {
-                    navigateOnboarding(navController, it)
-                }
+                SplashScreen(contentPadding) { navigateOnboarding(navController, it) }
             }
             composable<Onboarding.Introduce> {
-                IntroduceScreen(contentPadding) {
-                    navigateOnboarding(navController, it)
-                }
+                IntroduceScreen(contentPadding) { navigateOnboarding(navController, it) }
             }
         }
     }
@@ -103,7 +100,7 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.authenticationFlow(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Authentication.AuthFlow>(startDestination = Authentication.Login) {
             composable<Authentication.Login> {
-                TestScreen("Login")
+                LoginScreen(contentPadding) { navigateAuthentication(navController, it) }
             }
             composable<Authentication.Register> {
                 TestScreen("Register")
@@ -127,7 +124,7 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.appFlowHome(navController: NavHostController) {
         navigation<Home.HomeFlow>(startDestination = Home.Main) {
             composable<Home.Main> {
-
+                TestScreen("Main")
             }
             composable<Home.Profile> {}
             composable<Home.Search> {}
@@ -229,7 +226,30 @@ class MainActivity : ComponentActivity() {
                 navController.navigate(Onboarding.Introduce)
             }
             Onboarding.Skip -> {
-                navController.navigate(Authentication.Login) {
+                navController.navigate(Authentication.AuthFlow) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
+            else -> {}
+        }
+    }
+
+    private fun navigateAuthentication(navController: NavHostController, route: Authentication) {
+        when(route) {
+            is Authentication.Login -> {
+                navController.navigate(Authentication.Login)
+            }
+            is Authentication.Register -> {
+                navController.navigate(Authentication.Register)
+            }
+            is Authentication.ForgotPassword -> {
+                navController.navigate(Authentication.ForgotPassword)
+            }
+            is Authentication.Verification -> {
+
+            }
+            is Authentication.Skip -> {
+                navController.navigate(Home.HomeFlow) {
                     popUpTo(0) { inclusive = true }
                 }
             }
