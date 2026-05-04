@@ -35,7 +35,13 @@ sealed class Authentication {
     object ForgotPassword: Authentication()
 
     @Serializable
-    object Verification: Authentication()
+    data class Verification(
+        val email: String,
+        val credential: String
+    ): Authentication()
+
+    @Serializable
+    object Reset: Authentication()
 
     @Serializable
     object End: Authentication()

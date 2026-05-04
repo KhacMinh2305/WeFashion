@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.minhdk.wefashion.infrastructure.remote.api.DataApiService
 import com.minhdk.wefashion.presentation.ui.navigation.Authentication
 import com.minhdk.wefashion.presentation.ui.navigation.Contact
@@ -39,8 +40,10 @@ import com.minhdk.wefashion.presentation.ui.navigation.Setting
 import com.minhdk.wefashion.presentation.ui.navigation.appNavBarItemConfig
 import com.minhdk.wefashion.presentation.ui.navigation.base.AppBottomBar
 import com.minhdk.wefashion.presentation.ui.navigation.navigationItems
+import com.minhdk.wefashion.presentation.ui.screen.authentication.forgot.ForgotPasswordScreen
 import com.minhdk.wefashion.presentation.ui.screen.authentication.login.LoginScreen
 import com.minhdk.wefashion.presentation.ui.screen.authentication.register.RegisterScreen
+import com.minhdk.wefashion.presentation.ui.screen.authentication.verification.VerificationScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.introduce.IntroduceScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScreen
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
@@ -104,10 +107,17 @@ class MainActivity : ComponentActivity() {
                 RegisterScreen(contentPadding) { navigateAuthentication(navController, it) }
             }
             composable<Authentication.ForgotPassword> {
-                TestScreen("ForgotPassword")
+                ForgotPasswordScreen(contentPadding) { navigateAuthentication(navController, it) }
             }
-            composable<Authentication.Verification> {
-                TestScreen("Verification")
+            composable<Authentication.Verification> { backStackEntry ->
+                val route = backStackEntry.toRoute<Authentication.Verification>()
+                VerificationScreen(
+                    contentPadding = contentPadding,
+                    email = route.email,
+                    credential = route.credential
+                ) { dest ->
+                    navigateAuthentication(navController, dest)
+                }
             }
         }
     }
@@ -244,10 +254,13 @@ class MainActivity : ComponentActivity() {
                 navController.navigate(Authentication.ForgotPassword)
             }
             is Authentication.Verification -> {
-
+                navController.navigate(Authentication.Verification(route.email, route.credential))
+            }
+            is Authentication.Reset -> {
+                navController.popBackStack(Authentication.Login, false, saveState = false)
             }
             is Authentication.Back -> {
-                navController.popBackStack(Authentication.Login, false, saveState = false)
+                navController.popBackStack()
             }
             is Authentication.End -> {
                 navController.navigate(Home.HomeFlow) {
