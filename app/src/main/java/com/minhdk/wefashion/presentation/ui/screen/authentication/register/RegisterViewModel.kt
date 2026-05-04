@@ -1,12 +1,12 @@
-package com.minhdk.wefashion.presentation.ui.screen.authentication.login
+package com.minhdk.wefashion.presentation.ui.screen.authentication.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhdk.wefashion.domain.data.RequestResult
 import com.minhdk.wefashion.domain.repository.AccountRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import javax.inject.Inject
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -14,66 +14,66 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class RegisterViewModel @Inject constructor(
     private val accountRepo: AccountRepository
-): ViewModel() {
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(LoginUiState())
+    private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _effect = Channel<LoginEffect>()
+    private val _effect = Channel<RegisterEffect>()
     val effect = _effect.receiveAsFlow()
 
-    fun onIntent(intent: LoginIntent) {
+    fun onIntent(intent: RegisterIntent) {
         when (intent) {
-            is LoginIntent.EmailChanged -> {
+            is RegisterIntent.UsernameChanged -> {
+                _uiState.update { it.copy(username = intent.value) }
+            }
+            is RegisterIntent.EmailChanged -> {
                 _uiState.update { it.copy(emailOrPhone = intent.value) }
             }
-            is LoginIntent.PasswordChanged -> {
+            is RegisterIntent.PasswordChanged -> {
                 _uiState.update { it.copy(password = intent.value) }
             }
-            LoginIntent.TogglePasswordVisibility -> {
+            RegisterIntent.TogglePasswordVisibility -> {
                 _uiState.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
             }
-            LoginIntent.ForgotPassword -> {
-                viewModelScope.launch {
-                    _effect.send(LoginEffect.NavigateForgotPassword)
-                }
+            RegisterIntent.Submit -> {
+                submitRegister()
             }
-            LoginIntent.Submit -> {
-                submitLogin()
-            }
-            LoginIntent.Register -> {
-                _effect.trySend(LoginEffect.NavigateToRegister)
+            RegisterIntent.Back -> {
+                _effect.trySend(RegisterEffect.NavigateBack)
             }
         }
     }
 
-    private fun submitLogin() {
+    private fun submitRegister() {
         val current = _uiState.value
-        if (current.emailOrPhone.isBlank() || current.password.isBlank()) {
-            _effect.trySend(LoginEffect.ShowToast("Please fill all fields"))
+        if (current.username.isBlank() || current.emailOrPhone.isBlank() || current.password.isBlank()) {
+            _effect.trySend(RegisterEffect.ShowToast("Please fill all fields"))
             return
         }
 
         viewModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true) }
 
-            val result = accountRepo.loginAccount(
-                username = current.emailOrPhone.trim(),
+            val result = accountRepo.registerAccount(
+                email = current.emailOrPhone.trim(),
+                username = current.username.trim(),
                 password = current.password
             )
 
             when (result) {
                 is RequestResult.Success -> {
                     _uiState.update { it.copy(isSubmitting = false) }
-                    _effect.send(LoginEffect.LoginSuccess)
+                    _effect.send(RegisterEffect.RegisterSuccess)
                 }
                 is RequestResult.Error -> {
                     _uiState.update { it.copy(isSubmitting = false) }
-                    _effect.send(LoginEffect.ShowToast("Login failed!"))
+                    _effect.send(RegisterEffect.ShowToast("Register failed!"))
                 }
             }
         }
     }
 }
+

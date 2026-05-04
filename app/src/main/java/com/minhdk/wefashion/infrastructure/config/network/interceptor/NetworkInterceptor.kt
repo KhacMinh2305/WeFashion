@@ -1,6 +1,7 @@
 package com.minhdk.wefashion.infrastructure.config.network.interceptor
 
 import com.minhdk.wefashion.infrastructure.config.network.retry.base.RetryManager
+import com.minhdk.wefashion.util.helper.logD
 import java.io.IOException
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -15,6 +16,7 @@ class NetworkInterceptor(
 
         while (true) {
             try {
+                logD("NetworkInterceptor", "Run Request: $url")
                 val response = chain.proceed(request)
                 if (response.isSuccessful) {
                     retryManager.onRequestSuccess(url)

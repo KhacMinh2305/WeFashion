@@ -1,6 +1,5 @@
 package com.minhdk.wefashion.presentation.ui
 
-import android.R.attr.textSize
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,12 +20,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NoOpNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -43,6 +40,7 @@ import com.minhdk.wefashion.presentation.ui.navigation.appNavBarItemConfig
 import com.minhdk.wefashion.presentation.ui.navigation.base.AppBottomBar
 import com.minhdk.wefashion.presentation.ui.navigation.navigationItems
 import com.minhdk.wefashion.presentation.ui.screen.authentication.login.LoginScreen
+import com.minhdk.wefashion.presentation.ui.screen.authentication.register.RegisterScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.introduce.IntroduceScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScreen
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
@@ -103,7 +101,7 @@ class MainActivity : ComponentActivity() {
                 LoginScreen(contentPadding) { navigateAuthentication(navController, it) }
             }
             composable<Authentication.Register> {
-                TestScreen("Register")
+                RegisterScreen(contentPadding) { navigateAuthentication(navController, it) }
             }
             composable<Authentication.ForgotPassword> {
                 TestScreen("ForgotPassword")
@@ -225,7 +223,7 @@ class MainActivity : ComponentActivity() {
             Onboarding.Introduce -> {
                 navController.navigate(Onboarding.Introduce)
             }
-            Onboarding.Skip -> {
+            Onboarding.End -> {
                 navController.navigate(Authentication.AuthFlow) {
                     popUpTo(0) { inclusive = true }
                 }
@@ -248,7 +246,10 @@ class MainActivity : ComponentActivity() {
             is Authentication.Verification -> {
 
             }
-            is Authentication.Skip -> {
+            is Authentication.Back -> {
+                navController.popBackStack(Authentication.Login, false, saveState = false)
+            }
+            is Authentication.End -> {
                 navController.navigate(Home.HomeFlow) {
                     popUpTo(0) { inclusive = true }
                 }

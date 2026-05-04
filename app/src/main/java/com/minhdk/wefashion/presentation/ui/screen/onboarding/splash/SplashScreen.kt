@@ -34,7 +34,7 @@ fun SplashScreen(
 
     LaunchedEffect(Unit) {
         viewmodel.nextState.collect {
-            onNavigate(if(it) Onboarding.Introduce else Onboarding.Skip)
+            onNavigate(if(it) Onboarding.Introduce else Onboarding.End)
         }
     }
 

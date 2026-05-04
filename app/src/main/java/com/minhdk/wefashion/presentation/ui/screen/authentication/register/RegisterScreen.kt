@@ -1,4 +1,4 @@
-package com.minhdk.wefashion.presentation.ui.screen.authentication.login
+package com.minhdk.wefashion.presentation.ui.screen.authentication.register
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,42 +12,40 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.minhdk.wefashion.presentation.ui.navigation.Authentication
-import com.minhdk.wefashion.presentation.ui.screen.authentication.login.component.LoginContent
+import com.minhdk.wefashion.presentation.ui.screen.authentication.register.component.RegisterContent
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     contentPadding: PaddingValues,
     onNavigate: (Authentication) -> Unit
 ) {
-
-    val viewmodel: LoginViewModel = hiltViewModel()
+    val viewmodel: RegisterViewModel = hiltViewModel()
     val uiState by viewmodel.uiState.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewmodel.effect.collect { effect ->
             when (effect) {
-                is LoginEffect.NavigateForgotPassword -> onNavigate(Authentication.ForgotPassword)
-                is LoginEffect.ShowToast -> {
+                is RegisterEffect.RegisterSuccess -> onNavigate(Authentication.End)
+                is RegisterEffect.ShowToast -> {
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
                 }
-                is LoginEffect.LoginSuccess -> onNavigate(Authentication.End)
-                is LoginEffect.NavigateToRegister -> onNavigate(Authentication.Register)
+                is RegisterEffect.NavigateBack -> onNavigate(Authentication.Back)
             }
         }
     }
 
-    LoginContent(
+    RegisterContent(
         uiState = uiState,
-        onEmailChange = { viewmodel.onIntent(LoginIntent.EmailChanged(it)) },
-        onPasswordChange = { viewmodel.onIntent(LoginIntent.PasswordChanged(it)) },
-        onTogglePassword = { viewmodel.onIntent(LoginIntent.TogglePasswordVisibility) },
-        onForgotPassword = { viewmodel.onIntent(LoginIntent.ForgotPassword) },
-        onSubmit = { viewmodel.onIntent(LoginIntent.Submit) },
-        onRegister = { viewmodel.onIntent(LoginIntent.Register) },
+        onUsernameChange = { viewmodel.onIntent(RegisterIntent.UsernameChanged(it)) },
+        onEmailChange = { viewmodel.onIntent(RegisterIntent.EmailChanged(it)) },
+        onPasswordChange = { viewmodel.onIntent(RegisterIntent.PasswordChanged(it)) },
+        onTogglePassword = { viewmodel.onIntent(RegisterIntent.TogglePasswordVisibility) },
+        onSubmit = { viewmodel.onIntent(RegisterIntent.Submit) },
+        onBack = { viewmodel.onIntent(RegisterIntent.Back) },
         modifier = Modifier
             .fillMaxSize()
             .padding(contentPadding)
     )
-
 }
+

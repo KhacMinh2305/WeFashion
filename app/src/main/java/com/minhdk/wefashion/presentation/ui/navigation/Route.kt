@@ -15,7 +15,7 @@ sealed class Onboarding {
     object Introduce: Onboarding()
 
     @Serializable
-    object Skip: Onboarding()
+    object End: Onboarding()
 
 }
 
@@ -38,7 +38,10 @@ sealed class Authentication {
     object Verification: Authentication()
 
     @Serializable
-    object Skip: Authentication()
+    object End: Authentication()
+
+    @Serializable
+    object Back: Authentication()
 }
 
 @Serializable

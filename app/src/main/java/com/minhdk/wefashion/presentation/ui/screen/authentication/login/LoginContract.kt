@@ -13,10 +13,12 @@ sealed interface LoginIntent {
     data object TogglePasswordVisibility : LoginIntent
     data object ForgotPassword : LoginIntent
     data object Submit : LoginIntent
+    data object Register : LoginIntent
 }
 
 sealed interface LoginEffect {
     data object NavigateForgotPassword : LoginEffect
+    data object NavigateToRegister : LoginEffect
     data class ShowToast(val message: String) : LoginEffect
     data object LoginSuccess: LoginEffect
 }

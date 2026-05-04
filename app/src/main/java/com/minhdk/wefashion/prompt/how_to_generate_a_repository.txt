@@ -65,6 +65,26 @@
 - Run a compile task to ensure Room schema and DI wiring are correct.
 - Fix any missing imports or mismatched types.
 
-Notes
-- Keep file/identifier names ASCII.
-- Use concise comments only when logic is non-obvious.
+Notes - Mapping and helpers
+- Domain layer must only use DTOs and primitives. No infra types in domain interfaces.
+- Response -> DTO mapping:
+  - Location: infrastructure/mapper/model
+  - Create extension functions like ResponseX.toDtoX() that map nullable fields safely.
+  - Keep DTO fields aligned with use cases, not necessarily 1:1 with response shape.
+- Response -> Entity mapping:
+  - Location: infrastructure/mapper/model
+  - Use extension functions like ResponseX.toEntityX(); handle nulls and enforce required fields.
+  - Insert entities in local data source inside repository impl as needed.
+- DTO <-> Entity mapping (if required):
+  - Location: infrastructure/mapper/model
+  - Provide explicit mapping for each direction to avoid leaking room types into domain.
+- Request helper functions (create request objects from primitives):
+  - Location: infrastructure/mapper/helper/<module>
+  - Example: buildRegisterAccountRequest(email, username, password): RequestRegisterAccount
+  - Purpose: keep repository interfaces clean and centralize request building in infra.
+- Repository impl flow:
+  1) Receive primitives/DTOs from domain.
+  2) Build request objects with helper functions.
+  3) Call remote data source.
+  4) Map responses to DTOs (or entities) with mapper functions.
+  5) Return RequestResult.Success/Error accordingly.

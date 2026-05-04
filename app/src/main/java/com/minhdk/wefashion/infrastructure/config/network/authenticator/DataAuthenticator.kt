@@ -7,8 +7,8 @@ import javax.inject.Singleton
 
 @Singleton
 class DataAuthenticator @Inject constructor(
-    private val manager: TokenManager<com.minhdk.wefashion.infrastructure.remote.model.token.DataAccessToken>
-): BaseAuthenticator<com.minhdk.wefashion.infrastructure.remote.model.token.DataAccessToken>(manager) {
+    private val manager: TokenManager<DataAccessToken>
+): BaseAuthenticator<DataAccessToken>(manager) {
 
     override val tag = "DataAuthenticator"
 

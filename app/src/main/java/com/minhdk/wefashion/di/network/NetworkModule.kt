@@ -51,7 +51,7 @@ class NetworkModule {
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .authenticator(authenticator)
-            .addNetworkInterceptor(NetworkInterceptor(retryManager))
+//            .addNetworkInterceptor(NetworkInterceptor(retryManager))
             .addInterceptor(AppInterceptor(tokenManager))
             .build()
         return Retrofit.Builder()
