@@ -1,5 +1,6 @@
-package com.minhdk.wefashion.infrastructure.mapper
+package com.minhdk.wefashion.infrastructure.mapper.model
 
+import com.minhdk.wefashion.domain.data.authentication.DtoAccount
 import com.minhdk.wefashion.infrastructure.database.room.entity.EntityAccount
 import com.minhdk.wefashion.infrastructure.database.room.entity.EntityUser
 import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.ResponseAccount
@@ -27,3 +28,11 @@ fun ResponseAccount.toEntityUser(): EntityUser? {
     }
 }
 
+
+fun EntityAccount.toDtoAccount(): DtoAccount {
+    return DtoAccount(
+        id = id,
+        username = username,
+        phoneNumber = phoneNumber
+    )
+}

@@ -12,6 +12,6 @@ data class EntityAccount(
     @ColumnInfo(name = "username")
     val username: String,
     @ColumnInfo(name = "phone_number")
-    val phoneNumber: String,
+    val phoneNumber: String
 )
 

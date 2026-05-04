@@ -1,4 +1,4 @@
-package com.minhdk.wefashion.infrastructure.mapper
+package com.minhdk.wefashion.infrastructure.mapper.model
 
 import com.minhdk.wefashion.infrastructure.database.room.entity.EntityCategory
 import com.minhdk.wefashion.infrastructure.remote.model.api.category.RemoteCategory

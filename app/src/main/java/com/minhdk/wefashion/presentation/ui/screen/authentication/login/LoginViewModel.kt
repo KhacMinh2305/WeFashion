@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhdk.wefashion.domain.data.RequestResult
 import com.minhdk.wefashion.domain.repository.AccountRepository
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestLoginAccount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import javax.inject.Inject
@@ -58,10 +57,8 @@ class LoginViewModel @Inject constructor(
             _uiState.update { it.copy(isSubmitting = true) }
 
             val result = accountRepo.loginAccount(
-                RequestLoginAccount(
-                    username = current.emailOrPhone.trim(),
-                    password = current.password
-                )
+                username = current.emailOrPhone.trim(),
+                password = current.password
             )
 
             when (result) {

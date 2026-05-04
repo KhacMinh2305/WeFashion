@@ -5,8 +5,8 @@ import com.minhdk.wefashion.domain.repository.CategoryRepository
 import com.minhdk.wefashion.infrastructure.database.room.entity.EntityCategory
 import com.minhdk.wefashion.infrastructure.datasource.category.local.LocalCategoryDataSource
 import com.minhdk.wefashion.infrastructure.datasource.category.remote.RemoteCategoryDataSource
-import com.minhdk.wefashion.infrastructure.mapper.toEntityCategories
-import com.minhdk.wefashion.infrastructure.mapper.toEntityCategory
+import com.minhdk.wefashion.infrastructure.mapper.model.toEntityCategories
+import com.minhdk.wefashion.infrastructure.mapper.model.toEntityCategory
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton

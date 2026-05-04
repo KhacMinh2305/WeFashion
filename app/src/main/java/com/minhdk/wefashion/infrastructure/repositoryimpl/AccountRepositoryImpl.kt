@@ -1,22 +1,26 @@
 package com.minhdk.wefashion.infrastructure.repositoryimpl
 
 import com.minhdk.wefashion.domain.data.RequestResult
+import com.minhdk.wefashion.domain.data.authentication.DtoAccount
+import com.minhdk.wefashion.domain.data.authentication.DtoChangePassword
+import com.minhdk.wefashion.domain.data.authentication.DtoForgotPasswordCredential
+import com.minhdk.wefashion.domain.data.authentication.DtoForgotPasswordValidation
 import com.minhdk.wefashion.domain.repository.AccountRepository
 import com.minhdk.wefashion.infrastructure.database.room.entity.EntityAccount
 import com.minhdk.wefashion.infrastructure.datasource.account.local.LocalAccountDataSource
 import com.minhdk.wefashion.infrastructure.datasource.account.remote.RemoteAccountDataSource
-import com.minhdk.wefashion.infrastructure.mapper.toEntityAccount
-import com.minhdk.wefashion.infrastructure.mapper.toEntityUser
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestChangePassword
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestForgotPassword
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestForgotPasswordValidate
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestLoginAccount
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.request.RequestRegisterAccount
+import com.minhdk.wefashion.infrastructure.mapper.helper.authentication.buildChangePasswordRequest
+import com.minhdk.wefashion.infrastructure.mapper.helper.authentication.buildForgotPasswordRequest
+import com.minhdk.wefashion.infrastructure.mapper.helper.authentication.buildForgotPasswordValidateRequest
+import com.minhdk.wefashion.infrastructure.mapper.helper.authentication.buildLoginAccountRequest
+import com.minhdk.wefashion.infrastructure.mapper.helper.authentication.buildRegisterAccountRequest
+import com.minhdk.wefashion.infrastructure.mapper.model.toDtoAccount
+import com.minhdk.wefashion.infrastructure.mapper.model.toDtoChangePassword
+import com.minhdk.wefashion.infrastructure.mapper.model.toDtoForgotPasswordCredential
+import com.minhdk.wefashion.infrastructure.mapper.model.toDtoForgotPasswordValidation
+import com.minhdk.wefashion.infrastructure.mapper.model.toEntityAccount
+import com.minhdk.wefashion.infrastructure.mapper.model.toEntityUser
 import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.ResponseAccount
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.ResponseChangePassword
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.ResponseForgotPasswordCredential
-import com.minhdk.wefashion.infrastructure.remote.model.api.account.response.ResponseForgotPasswordValidation
-import okhttp3.Request
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,20 +43,25 @@ class AccountRepositoryImpl @Inject constructor(
     }
 
     override suspend fun registerAccount(
-        body: RequestRegisterAccount
-    ): RequestResult<EntityAccount> {
+        email: String,
+        username: String,
+        password: String
+    ): RequestResult<DtoAccount> {
         return try {
+            val body = buildRegisterAccountRequest(email, username, password)
             val entity = cacheAccountAndUser(remoteSource.registerAccount(body))
-            return RequestResult.Success(entity)
+            RequestResult.Success(entity.toDtoAccount())
         } catch (e: Exception) {
             RequestResult.Error(e)
         }
     }
 
     override suspend fun loginAccount(
-        body: RequestLoginAccount
+        username: String,
+        password: String
     ): RequestResult<Unit?> {
         return try {
+            val body = buildLoginAccountRequest(username, password)
             cacheAccountAndUser(remoteSource.loginAccount(body))
             RequestResult.Success(Unit)
         } catch (e: Exception) {
@@ -61,33 +70,42 @@ class AccountRepositoryImpl @Inject constructor(
     }
 
     override suspend fun forgotPassword(
-        body: RequestForgotPassword
-    ): RequestResult<ResponseForgotPasswordCredential?> {
+        email: String
+    ): RequestResult<DtoForgotPasswordCredential?> {
         return try {
-            RequestResult.Success(remoteSource.forgotPassword(body))
+            val body = buildForgotPasswordRequest(email)
+            val res = remoteSource.forgotPassword(body)
+            RequestResult.Success(res?.toDtoForgotPasswordCredential())
         } catch (e: Exception) {
             RequestResult.Error(e)
         }
     }
 
     override suspend fun validateForgotPassword(
-        body: RequestForgotPasswordValidate
-    ): RequestResult<ResponseForgotPasswordValidation?> {
+        email: String,
+        code: String,
+        credential: String
+    ): RequestResult<DtoForgotPasswordValidation?> {
         return try {
-            RequestResult.Success(remoteSource.validateForgotPassword(body))
+            val body = buildForgotPasswordValidateRequest(email, code, credential)
+            val res = remoteSource.validateForgotPassword(body)
+            RequestResult.Success(res?.toDtoForgotPasswordValidation())
         } catch (e: Exception) {
             RequestResult.Error(e)
         }
     }
 
     override suspend fun changePassword(
-        body: RequestChangePassword
-    ): RequestResult<ResponseChangePassword?> {
+        username: String,
+        oldPassword: String,
+        newPassword: String
+    ): RequestResult<DtoChangePassword> {
         return try {
-            RequestResult.Success(remoteSource.changePassword(body))
+            val body = buildChangePasswordRequest(username, oldPassword, newPassword)
+            val res = remoteSource.changePassword(body) ?: throw Exception("Response is null")
+            RequestResult.Success(res.toDtoChangePassword())
         } catch (e: Exception) {
             RequestResult.Error(e)
         }
     }
 }
-
