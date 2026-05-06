@@ -7,6 +7,5 @@ interface LocalAccountDataSource {
 
     suspend fun insertAccount(account: EntityAccount): Long
 
-    suspend fun insertUser(user: EntityUser): Long
 }
 

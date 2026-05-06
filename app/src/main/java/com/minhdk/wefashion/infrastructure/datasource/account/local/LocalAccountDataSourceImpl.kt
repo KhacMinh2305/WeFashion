@@ -11,16 +11,11 @@ import kotlinx.coroutines.withContext
 
 @Singleton
 class LocalAccountDataSourceImpl @Inject constructor(
-    private val daoAccount: DaoAccount,
-    private val daoUser: DaoUser
+    private val daoAccount: DaoAccount
 ) : LocalAccountDataSource {
 
     override suspend fun insertAccount(account: EntityAccount): Long = withContext(Dispatchers.IO) {
         daoAccount.insertAccount(account)
-    }
-
-    override suspend fun insertUser(user: EntityUser): Long = withContext(Dispatchers.IO) {
-        daoUser.insertUser(user)
     }
 }
 

@@ -13,14 +13,29 @@ data class RemoteGetCouponByIdResponse(
     @SerializedName("name")
     @Expose
     val name: String,
-    @SerializedName("description")
+    @SerializedName("banner_url")
     @Expose
-    val description: String,
-    @SerializedName("discount")
+    val bannerUrl: String?,
+    @SerializedName("discount_value")
     @Expose
-    val discount: Int,
+    val discountValue: Int,
+    @SerializedName("discount_type")
+    @Expose
+    val discountType: String?,
+    @SerializedName("amount")
+    @Expose
+    val amount: Int,
+    @SerializedName("created_at")
+    @Expose
+    val createdAt: String?,
     @SerializedName("expired_at")
     @Expose
-    val expiredAt: String
+    val expiredAt: String,
+    @SerializedName("max_discount")
+    @Expose
+    val maxDiscount: Int,
+    @SerializedName("min_order_value")
+    @Expose
+    val minOrderValue: Int
 )
 

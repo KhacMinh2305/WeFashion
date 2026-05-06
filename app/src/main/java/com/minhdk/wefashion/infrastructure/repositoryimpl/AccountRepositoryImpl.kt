@@ -6,7 +6,9 @@ import com.minhdk.wefashion.domain.data.authentication.DtoChangePassword
 import com.minhdk.wefashion.domain.data.authentication.DtoForgotPasswordCredential
 import com.minhdk.wefashion.domain.data.authentication.DtoForgotPasswordValidation
 import com.minhdk.wefashion.domain.repository.AccountRepository
+import com.minhdk.wefashion.domain.repository.UserRepository
 import com.minhdk.wefashion.infrastructure.database.room.entity.EntityAccount
+import com.minhdk.wefashion.infrastructure.database.room.entity.EntityUser
 import com.minhdk.wefashion.infrastructure.datasource.account.local.LocalAccountDataSource
 import com.minhdk.wefashion.infrastructure.datasource.account.remote.RemoteAccountDataSource
 import com.minhdk.wefashion.infrastructure.mapper.helper.authentication.buildChangePasswordRequest
@@ -27,15 +29,21 @@ import javax.inject.Singleton
 @Singleton
 class AccountRepositoryImpl @Inject constructor(
     private val remoteSource: RemoteAccountDataSource,
-    private val localSource: LocalAccountDataSource
+    private val localSource: LocalAccountDataSource,
+    private val userRepo: UserRepository
 ) : AccountRepository {
+
+    private var accountThisSession: EntityAccount? = null
+
+    override fun getCurrentAccount(): DtoAccount? = accountThisSession?.toDtoAccount()
 
     private suspend fun cacheAccountAndUser(account: ResponseAccount?) : EntityAccount {
         return account?.let {
             val acc = account.toEntityAccount() ?: throw Exception("Important field is null")
             val user = account.toEntityUser() ?: throw Exception("Important field is null")
             localSource.insertAccount(acc)
-            localSource.insertUser(user)
+            userRepo.cacheUser(user)
+            accountThisSession = acc
             acc
         } ?: run {
             throw Exception("Account is null")

@@ -1,7 +1,7 @@
 package com.minhdk.wefashion.presentation.ui.screen.authentication.login
 
 data class LoginUiState(
-    val emailOrPhone: String = "",
+    val username: String = "",
     val password: String = "",
     val isPasswordVisible: Boolean = false,
     val isSubmitting: Boolean = false

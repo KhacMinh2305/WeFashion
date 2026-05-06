@@ -27,7 +27,7 @@ class LoginViewModel @Inject constructor(
     fun onIntent(intent: LoginIntent) {
         when (intent) {
             is LoginIntent.EmailChanged -> {
-                _uiState.update { it.copy(emailOrPhone = intent.value) }
+                _uiState.update { it.copy(username = intent.value) }
             }
             is LoginIntent.PasswordChanged -> {
                 _uiState.update { it.copy(password = intent.value) }
@@ -51,7 +51,7 @@ class LoginViewModel @Inject constructor(
 
     private fun submitLogin() {
         val current = _uiState.value
-        if (current.emailOrPhone.isBlank() || current.password.isBlank()) {
+        if (current.username.isBlank() || current.password.isBlank()) {
             _effect.trySend(LoginEffect.ShowToast("Please fill all fields"))
             return
         }
@@ -60,7 +60,7 @@ class LoginViewModel @Inject constructor(
             _uiState.update { it.copy(isSubmitting = true) }
 
             val result = accountRepo.loginAccount(
-                username = current.emailOrPhone.trim(),
+                username = current.username.trim(),
                 password = current.password
             )
 

@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.minhdk.wefashion.presentation.ui.theme.Background
 
 data class NavbarConfig(
     val pHorizontal: Dp = 0.dp,
@@ -30,7 +31,7 @@ data class NavBarItemConfig(
 )
 
 fun defaultNavBarConfig() = NavbarConfig(
-    bgColor = Color.White,
+    bgColor = Background,
     bgShape = RoundedCornerShape(0.dp)
 )
 

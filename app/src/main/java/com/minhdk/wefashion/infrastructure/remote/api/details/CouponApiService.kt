@@ -5,6 +5,7 @@ import com.minhdk.wefashion.infrastructure.remote.model.api.coupon.RemoteGetCoup
 import com.minhdk.wefashion.infrastructure.remote.model.api.coupon.RemoteGetCouponsByUserResponse
 import com.minhdk.wefashion.infrastructure.remote.model.api.coupon.RemoteGetCouponsForOrderResponse
 import com.minhdk.wefashion.infrastructure.remote.model.api.coupon.RemoteGetCouponsResponse
+import com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -12,26 +13,26 @@ import retrofit2.http.Query
 interface CouponApiService {
 
     @GET("/api/coupons")
-    suspend fun getCoupons(): com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse<RemoteGetCouponsResponse>
+    suspend fun getCoupons(): BaseResponse<RemoteGetCouponsResponse>
 
     @GET("/api/coupons/{id}")
     suspend fun getCouponById(
         @Path("id") id: Int
-    ): com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse<RemoteGetCouponByIdResponse>
+    ): BaseResponse<RemoteGetCouponByIdResponse>
 
     @GET("/api/coupons/shop")
     suspend fun getCouponsByShop(
         @Query("shop_id") shopId: Int
-    ): com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse<RemoteGetCouponsByShopResponse>
+    ): BaseResponse<RemoteGetCouponsByShopResponse>
 
     @GET("/api/coupons/user")
     suspend fun getCouponsByUser(
         @Query("user_id") userId: Int
-    ): com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse<RemoteGetCouponsByUserResponse>
+    ): BaseResponse<RemoteGetCouponsByUserResponse>
 
     @GET("/api/coupons/order")
     suspend fun getCouponsForOrder(
         @Query("shop_id") shopId: Int
-    ): com.minhdk.wefashion.infrastructure.remote.model.baseResponse.BaseResponse<RemoteGetCouponsForOrderResponse>
+    ): BaseResponse<RemoteGetCouponsForOrderResponse>
 }
 

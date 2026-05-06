@@ -44,6 +44,7 @@ import com.minhdk.wefashion.presentation.ui.screen.authentication.forgot.ForgotP
 import com.minhdk.wefashion.presentation.ui.screen.authentication.login.LoginScreen
 import com.minhdk.wefashion.presentation.ui.screen.authentication.register.RegisterScreen
 import com.minhdk.wefashion.presentation.ui.screen.authentication.verification.VerificationScreen
+import com.minhdk.wefashion.presentation.ui.screen.home.main.MainScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.introduce.IntroduceScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScreen
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
@@ -123,21 +124,22 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun NavGraphBuilder.appFlow(navController: NavHostController, contentPadding: PaddingValues) {
-        appFlowHome(navController)
+        appFlowHome(navController, contentPadding)
         appFlowOrder(navController)
         appFlowContact(navController)
         appFlowSetting(navController)
     }
 
-    private fun NavGraphBuilder.appFlowHome(navController: NavHostController) {
+    private fun NavGraphBuilder.appFlowHome(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Home.HomeFlow>(startDestination = Home.Main) {
             composable<Home.Main> {
-                TestScreen("Main")
+                MainScreen(contentPadding) {
+                    handleHomeNavigation(navController, it)
+                }
             }
             composable<Home.Profile> {}
             composable<Home.Search> {}
-            composable<Home.Notification> {}
-            composable<Home.ListProducts> {}
+            composable<Home.ProductDetail> {}
         }
     }
 
@@ -179,8 +181,7 @@ class MainActivity : ComponentActivity() {
             destination.hasRoute<Home.Main>() -> pos = 0
             destination.hasRoute<Home.Profile>() -> pos = 0
             destination.hasRoute<Home.Search>() -> pos = 0
-            destination.hasRoute<Home.Notification>() -> pos = 0
-            destination.hasRoute<Home.ListProducts>() -> pos = 0
+            destination.hasRoute<Home.ProductDetail>() -> pos = 0
 
             destination.hasRoute<Order.MyOrder>() -> pos = 1
             destination.hasRoute<Order.OrderDetail>() -> pos = 1
@@ -211,20 +212,6 @@ class MainActivity : ComponentActivity() {
             }
             launchSingleTop = true
             restoreState = true
-        }
-    }
-
-    @Composable
-    private fun TestScreen(title: String) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize().padding(12.dp).background(Color.Black)
-        ) {
-            Text(
-                color = Color.White,
-                text = title,
-                fontSize = 20.sp
-            )
         }
     }
 
@@ -260,7 +247,7 @@ class MainActivity : ComponentActivity() {
                 navController.popBackStack(Authentication.Login, false, saveState = false)
             }
             is Authentication.Back -> {
-                navController.popBackStack()
+                navController.navigateUp()
             }
             is Authentication.End -> {
                 navController.navigate(Home.HomeFlow) {
@@ -270,6 +257,29 @@ class MainActivity : ComponentActivity() {
             else -> {}
         }
     }
+
+    private fun handleHomeNavigation(navController: NavHostController, route: Home) {
+        when (route) {
+            is Home.Main -> {
+                navController.navigate(Home.Main)
+            }
+
+            is Home.Profile -> {
+                navController.navigate(Home.Profile)
+            }
+
+            is Home.Search -> {
+                navController.navigate(Home.Search)
+            }
+
+            is Home.ProductDetail -> {
+                navController.navigate(Home.ProductDetail(route.productId))
+            }
+
+            else -> {}
+        }
+    }
+
 }
 
 //private val TURTLE_TOWER_POINT = GeoPoint(latitude = 21.027778, longitude = 105.852222)

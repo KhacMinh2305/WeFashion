@@ -44,7 +44,7 @@ sealed class Authentication {
     object Reset: Authentication()
 
     @Serializable
-    object End: Authentication()
+    data object End: Authentication()
 
     @Serializable
     object Back: Authentication()
@@ -57,7 +57,7 @@ sealed class Home {
     object HomeFlow: Home()
 
     @Serializable
-    object Main: Home()
+    data object Main: Home()
 
     @Serializable
     object Profile: Home()
@@ -66,10 +66,7 @@ sealed class Home {
     object Search: Home()
 
     @Serializable
-    object Notification: Home()
-
-    @Serializable
-    data class ListProducts(val type: String): Home()
+    data class ProductDetail(val productId: Int): Home()
 }
 
 @Serializable

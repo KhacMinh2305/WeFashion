@@ -667,8 +667,56 @@
 - **Endpoint:** `GET api/product/shop/:id`
 - **Header:** `Authorization: Bearer <token>`
 - **Response thành công (tìm thấy):**
-```
-(Bố sung sau)
+```json
+{
+  "status_code": 200,
+  "time": "2026-05-05T10:30:00Z",
+  "data": {
+    "shop": {
+      "id": 1,
+      "name": "Tech Haven Store",
+      "avatar_url": "https://example.com/avatars/shop1.jpg",
+      "email": "techhaven@example.com",
+      "phone_number": "+84901234567",
+      "bio": "Chuyên cung cấp các sản phẩm công nghệ chính hãng, uy tín hàng đầu.",
+      "rate_amount": 320,
+      "rating": 4.7,
+      "followers": 1500
+    },
+    "products": [
+      {
+        "id": 101,
+        "name": "Tai nghe Sony WH-1000XM5",
+        "image_url": "https://example.com/products/sony-wh1000xm5.jpg",
+        "description": "Tai nghe chống ồn cao cấp, chất âm vượt trội, pin 30 giờ.",
+        "rating": 4.9,
+        "sold_amount": 850,
+        "liked_amount": 1200,
+        "category_id": 3
+      },
+      {
+        "id": 102,
+        "name": "Chuột Logitech MX Master 3S",
+        "image_url": "https://example.com/products/logitech-mx-master-3s.jpg",
+        "description": "Chuột không dây cao cấp dành cho dân văn phòng và designer.",
+        "rating": 4.8,
+        "sold_amount": 430,
+        "liked_amount": 670,
+        "category_id": 5
+      },
+      {
+        "id": 103,
+        "name": "Bàn phím cơ Keychron K2 Pro",
+        "image_url": "https://example.com/products/keychron-k2-pro.jpg",
+        "description": "Bàn phím cơ compact 75%, kết nối đa thiết bị, hot-swap switch.",
+        "rating": 4.6,
+        "sold_amount": 210,
+        "liked_amount": 390,
+        "category_id": 5
+      }
+    ]
+  }
+}
 ```
 
 - **Response thành công (không tìm thấy):**
@@ -989,6 +1037,50 @@
 ```
 - **Lưu ý:** Endpoint này không yêu cầu `Authorization` header vì nó được gọi từ hệ thống của PayOS.
 
+
+## 13. Search APIs
+
+### 13.1. Tìm kiếm sản phẩm và shop
+- **Endpoint:** `GET /api/search`
+- **Header:** `Authorization: Bearer <token>`
+- **Query:**
+    - `query`: Chuỗi tìm kiếm (tùy chọn, mặc định rỗng). Tìm kiếm tên/mô tả sản phẩm, tên/bio shop.
+    - `limit`: Số lượng kết quả tối đa cho mỗi loại (tùy chọn, mặc định 10).
+- **Response thành công:**
+```json
+{
+  "status_code": 200,
+  "time": "...",
+  "data": {
+    "products": [
+      {
+        "id": 1,
+        "name": "...",
+        "image_url": "...",
+        "description": "...",
+        "rating": 4.5,
+        "sold_amount": 100,
+        "liked_amount": 50,
+        "category_id": 1,
+        "shop_id": 1
+      }
+    ],
+    "shops": [
+      {
+        "id": 1,
+        "name": "...",
+        "avatar_url": "...",
+        "email": "...",
+        "phone_number": "...",
+        "bio": "...",
+        "rate_amount": 10,
+        "rating": 4.5,
+        "followers": 100
+      }
+    ]
+  }
+}
+```
 
 ---
 - Tất cả các API đều yêu cầu token hợp lệ (JWT, truyền qua header Authorization).

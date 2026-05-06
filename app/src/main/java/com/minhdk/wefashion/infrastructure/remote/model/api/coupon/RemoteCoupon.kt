@@ -6,21 +6,35 @@ import com.google.gson.annotations.SerializedName
 data class RemoteCoupon(
     @SerializedName("id")
     @Expose
-    val id: Int,
+    val id: Int?,
     @SerializedName("shop_id")
     @Expose
-    val shopId: Int,
+    val shopId: Int?,
     @SerializedName("name")
     @Expose
-    val name: String,
-    @SerializedName("description")
+    val name: String?,
+    @SerializedName("banner_url")
     @Expose
-    val description: String,
-    @SerializedName("discount")
+    val bannerUrl: String?,
+    @SerializedName("discount_value")
     @Expose
-    val discount: Int,
+    val discountValue: Int?,
+    @SerializedName("discount_type")
+    @Expose
+    val discountType: String?,
+    @SerializedName("amount")
+    @Expose
+    val amount: Int?,
+    @SerializedName("created_at")
+    @Expose
+    val createdAt: String?,
     @SerializedName("expired_at")
     @Expose
-    val expiredAt: String
+    val expiredAt: String?,
+    @SerializedName("max_discount")
+    @Expose
+    val maxDiscount: Int?,
+    @SerializedName("min_order_value")
+    @Expose
+    val minOrderValue: Int?
 )
-

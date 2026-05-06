@@ -8,6 +8,8 @@ import com.minhdk.wefashion.domain.data.authentication.DtoForgotPasswordValidati
 
 interface AccountRepository {
 
+    fun getCurrentAccount(): DtoAccount?
+
     suspend fun registerAccount(
         email: String,
         username: String,
