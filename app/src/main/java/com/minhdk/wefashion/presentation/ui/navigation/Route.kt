@@ -67,6 +67,9 @@ sealed class Home {
 
     @Serializable
     data class ProductDetail(val productId: Int): Home()
+
+    @Serializable
+    object Back: Home()
 }
 
 @Serializable

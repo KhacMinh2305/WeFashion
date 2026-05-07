@@ -7,7 +7,7 @@ import com.minhdk.wefashion.infrastructure.remote.model.api.product.response.Res
 data class ResponseSearchData(
     @SerializedName("products")
     @Expose
-    val products: List<ResponseProduct>?,
+    val products: List<ResponseSearchProduct>?,
     @SerializedName("shops")
     @Expose
     val shops: List<ResponseSearchShop>?

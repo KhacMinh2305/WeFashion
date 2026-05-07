@@ -5,6 +5,7 @@ import com.minhdk.wefashion.domain.repository.AuthenticationRepository
 import com.minhdk.wefashion.domain.repository.CategoryRepository
 import com.minhdk.wefashion.domain.repository.CouponRepository
 import com.minhdk.wefashion.domain.repository.ProductRepository
+import com.minhdk.wefashion.domain.repository.SearchRepository
 import com.minhdk.wefashion.domain.repository.UserRepository
 import com.minhdk.wefashion.infrastructure.datasource.account.local.LocalAccountDataSource
 import com.minhdk.wefashion.infrastructure.datasource.account.local.LocalAccountDataSourceImpl
@@ -22,6 +23,8 @@ import com.minhdk.wefashion.infrastructure.datasource.product.local.LocalProduct
 import com.minhdk.wefashion.infrastructure.datasource.product.local.LocalProductDataSourceImpl
 import com.minhdk.wefashion.infrastructure.datasource.product.remote.RemoteProductDataSource
 import com.minhdk.wefashion.infrastructure.datasource.product.remote.RemoteProductDataSourceImpl
+import com.minhdk.wefashion.infrastructure.datasource.search.RemoteSearchDataSource
+import com.minhdk.wefashion.infrastructure.datasource.search.RemoteSearchDataSourceImpl
 import com.minhdk.wefashion.infrastructure.datasource.user.local.LocalUserDataSource
 import com.minhdk.wefashion.infrastructure.datasource.user.local.LocalUserDataSourceImpl
 import com.minhdk.wefashion.infrastructure.datasource.user.remote.RemoteUserDataSource
@@ -31,6 +34,7 @@ import com.minhdk.wefashion.infrastructure.repositoryimpl.AuthenticationReposito
 import com.minhdk.wefashion.infrastructure.repositoryimpl.CategoryRepositoryImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.CouponRepositoryImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.ProductRepositoryImpl
+import com.minhdk.wefashion.infrastructure.repositoryimpl.SearchRepositoryImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -137,5 +141,17 @@ abstract class BindingModule {
     abstract fun bindProductRepository(
         impl: ProductRepositoryImpl
     ): ProductRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRemoteSearchDataSource(
+        impl: RemoteSearchDataSourceImpl
+    ): RemoteSearchDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindSearchRepository(
+        impl: SearchRepositoryImpl
+    ): SearchRepository
 
 }

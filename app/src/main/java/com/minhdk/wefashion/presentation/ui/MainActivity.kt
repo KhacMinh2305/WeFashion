@@ -45,6 +45,7 @@ import com.minhdk.wefashion.presentation.ui.screen.authentication.login.LoginScr
 import com.minhdk.wefashion.presentation.ui.screen.authentication.register.RegisterScreen
 import com.minhdk.wefashion.presentation.ui.screen.authentication.verification.VerificationScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.main.MainScreen
+import com.minhdk.wefashion.presentation.ui.screen.home.search.SearchScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.introduce.IntroduceScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScreen
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
@@ -138,7 +139,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
             composable<Home.Profile> {}
-            composable<Home.Search> {}
+            composable<Home.Search> {
+                SearchScreen(contentPadding) {
+                    handleHomeNavigation(navController, it)
+                }
+            }
             composable<Home.ProductDetail> {}
         }
     }
@@ -274,6 +279,10 @@ class MainActivity : ComponentActivity() {
 
             is Home.ProductDetail -> {
                 navController.navigate(Home.ProductDetail(route.productId))
+            }
+
+            is Home.Back -> {
+                navController.navigateUp()
             }
 
             else -> {}
