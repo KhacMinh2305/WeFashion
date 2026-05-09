@@ -5,20 +5,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -32,7 +24,7 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.minhdk.wefashion.infrastructure.remote.api.DataApiService
 import com.minhdk.wefashion.presentation.ui.navigation.Authentication
-import com.minhdk.wefashion.presentation.ui.navigation.Contact
+import com.minhdk.wefashion.presentation.ui.navigation.Cart
 import com.minhdk.wefashion.presentation.ui.navigation.Home
 import com.minhdk.wefashion.presentation.ui.navigation.Onboarding
 import com.minhdk.wefashion.presentation.ui.navigation.Order
@@ -138,13 +130,15 @@ class MainActivity : ComponentActivity() {
                     handleHomeNavigation(navController, it)
                 }
             }
-            composable<Home.Profile> {}
+//            composable<Home.Profile> {}
             composable<Home.Search> {
                 SearchScreen(contentPadding) {
                     handleHomeNavigation(navController, it)
                 }
             }
-            composable<Home.ProductDetail> {}
+            composable<Home.ProductDetail> {
+
+            }
         }
     }
 
@@ -153,14 +147,12 @@ class MainActivity : ComponentActivity() {
             composable<Order.MyOrder> {}
             composable<Order.OrderDetail> {}
             composable<Order.OrderTracking> {}
-            composable<Order.Cart> {}
         }
     }
 
     private fun NavGraphBuilder.appFlowContact(navController: NavHostController) {
-        navigation<Contact.ContactFlow>(startDestination = Contact.Message) {
-            composable<Contact.Message> {}
-            composable<Contact.Assistant> {}
+        navigation<Cart.CartFlow>(startDestination = Cart.CartMain) {
+            composable<Cart.CartMain> {}
         }
     }
 
@@ -184,17 +176,14 @@ class MainActivity : ComponentActivity() {
         var pos = -1
         when {
             destination.hasRoute<Home.Main>() -> pos = 0
-            destination.hasRoute<Home.Profile>() -> pos = 0
             destination.hasRoute<Home.Search>() -> pos = 0
             destination.hasRoute<Home.ProductDetail>() -> pos = 0
 
             destination.hasRoute<Order.MyOrder>() -> pos = 1
             destination.hasRoute<Order.OrderDetail>() -> pos = 1
             destination.hasRoute<Order.OrderTracking>() -> pos = 1
-            destination.hasRoute<Order.Cart>() -> pos = 1
 
-            destination.hasRoute<Contact.Message>() -> pos = 2
-            destination.hasRoute<Contact.Assistant>() -> pos = 2
+            destination.hasRoute<Cart.CartMain>() -> pos = 2
 
             destination.hasRoute<Setting.General>() -> pos = 3
         }
@@ -206,7 +195,7 @@ class MainActivity : ComponentActivity() {
         val tabRoute = when(position) {
             0 -> Home.HomeFlow
             1 -> Order.OrderFlow
-            2 -> Contact.ContactFlow
+            2 -> Cart.CartFlow
             3 -> Setting.SettingFlow
             else -> return
         }
@@ -269,9 +258,9 @@ class MainActivity : ComponentActivity() {
                 navController.navigate(Home.Main)
             }
 
-            is Home.Profile -> {
-                navController.navigate(Home.Profile)
-            }
+//            is Home.Profile -> {
+//                navController.navigate(Home.Profile)
+//            }
 
             is Home.Search -> {
                 navController.navigate(Home.Search)

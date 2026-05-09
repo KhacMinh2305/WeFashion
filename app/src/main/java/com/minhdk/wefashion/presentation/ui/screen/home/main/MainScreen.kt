@@ -144,12 +144,11 @@ private fun HeaderSection(
                 name = "Hi, " + user.name,
                 bio = user.bio,
                 avatarUrl = user.avatarUrl
-            )
+            ) {
+                onClick()
+            }
         },
         error = { HeaderContent(name = "Hi", bio = "", avatarUrl = "") },
-        modifier = Modifier.clickable {
-            onClick()
-        }
     )
 }
 
@@ -158,7 +157,8 @@ private fun HeaderSection(
 private fun HeaderContent(
     name: String,
     bio: String,
-    avatarUrl: String
+    avatarUrl: String,
+    onClickSearch: () -> Unit = {}
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -211,7 +211,10 @@ private fun HeaderContent(
                 .size(36.dp)
                 .clip(CircleShape)
                 .background(Color.White)
-                .border(BorderStroke(1.dp, TextSecondary.copy(alpha = 0.15f)), CircleShape),
+                .border(BorderStroke(1.dp, TextSecondary.copy(alpha = 0.15f)), CircleShape)
+                .clickable {
+                    onClickSearch()
+                },
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -221,7 +224,6 @@ private fun HeaderContent(
             )
         }
         Spacer(modifier = Modifier.width(10.dp))
-        // Notification intentionally omitted per requirements.
     }
 }
 

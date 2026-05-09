@@ -59,8 +59,8 @@ sealed class Home {
     @Serializable
     data object Main: Home()
 
-    @Serializable
-    object Profile: Home()
+//    @Serializable
+//    object Profile: Home()
 
     @Serializable
     object Search: Home()
@@ -87,22 +87,15 @@ sealed class Order {
     @Serializable
     data class OrderTracking(val orderId: Int): Order()
 
-    @Serializable
-    object Cart: Order()
-
 }
 
 @Serializable
-sealed class Contact {
+sealed class Cart {
 
     @Serializable
-    object ContactFlow: Contact()
+    object CartFlow: Cart()
 
-    @Serializable
-    object Message: Contact()
-
-    @Serializable
-    object Assistant: Contact()
+    object CartMain: Cart()
 }
 
 @Serializable
