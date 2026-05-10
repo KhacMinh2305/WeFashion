@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.minhdk.wefashion.R
@@ -32,6 +36,7 @@ fun ProductScreenDetailQuantityChanger(
     onClickPlus: () -> Unit = {}
 ) {
     Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
 
@@ -50,7 +55,6 @@ fun ProductScreenDetailQuantityChanger(
     }
 }
 
-// Modifier.width(90.dp).height(30.dp)
 @Composable
 fun QuantityChanger(
     modifier: Modifier = Modifier,
@@ -64,13 +68,15 @@ fun QuantityChanger(
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .wrapContentWidth()
+                .height(40.dp)
                 .clip(rounded(30))
                 .background(color = DisableButton)
-                .padding(3.dp)
+                .padding(5.dp)
         ) {
             QuantityButton(
-                size = 24.dp,
+                size = 30.dp,
                 icon = R.drawable.ic_minus,
                 bgColor = Color.White,
                 iconColor = Black,
@@ -82,11 +88,12 @@ fun QuantityChanger(
                 text = quantity.toString(),
                 color = Black,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 11.dp)
+                textAlign = TextAlign.Center,
+                modifier = Modifier.width(50.dp).padding(horizontal = 11.dp)
             )
 
             QuantityButton(
-                size = 24.dp,
+                size = 30.dp,
                 icon = R.drawable.ic_plus,
                 bgColor = Black,
                 iconColor = Color.White,

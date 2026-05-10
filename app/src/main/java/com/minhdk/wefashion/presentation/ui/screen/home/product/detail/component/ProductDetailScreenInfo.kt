@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,6 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.minhdk.wefashion.R
+import com.minhdk.wefashion.presentation.ui.theme.Black
+import com.minhdk.wefashion.presentation.ui.theme.TextPrimary
 
 @Composable
 fun ProductInfo(
@@ -29,10 +32,13 @@ fun ProductInfo(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Start,
+            color = Black,
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(10.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
@@ -46,15 +52,18 @@ fun ProductInfo(
             Text(
                 text = rating.toString(),
                 style = MaterialTheme.typography.labelLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f)
+                color = TextPrimary,
+                textAlign = TextAlign.Start
             )
         }
 
+        Spacer(modifier = Modifier.height(10.dp))
+
         Text(
             text = description,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Start,
+            color = TextPrimary,
             modifier = Modifier.fillMaxWidth()
         )
     }

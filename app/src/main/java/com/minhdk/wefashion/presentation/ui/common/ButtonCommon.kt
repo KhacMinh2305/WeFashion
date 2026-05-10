@@ -29,6 +29,7 @@ fun BaseButtonBox(
     disabledBgColor: Color = DisableButton,
     contentColor: Color,
     disabledContentColor: Color = TextSecondary,
+    verticalPadding : Dp = 16.dp,
     onClick: () -> Unit
 ) {
     Box(
@@ -41,6 +42,7 @@ fun BaseButtonBox(
             disabledBackgroundColor = disabledBgColor,
             contentColor = contentColor,
             disabledContentColor = disabledContentColor,
+            verticalPadding = verticalPadding,
             onClick = onClick
         )
     }

@@ -95,6 +95,7 @@ sealed class Cart {
     @Serializable
     object CartFlow: Cart()
 
+    @Serializable
     object CartMain: Cart()
 }
 

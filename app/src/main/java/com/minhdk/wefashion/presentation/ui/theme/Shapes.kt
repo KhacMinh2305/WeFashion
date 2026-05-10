@@ -18,3 +18,16 @@ val rounded_10 = RoundedCornerShape(10.dp)
 val rounded_8  = RoundedCornerShape(8.dp)
 
 fun rounded(dp: Int) = RoundedCornerShape(dp.dp)
+
+
+fun roundedSingleTop(radius: Int, start: Boolean) = if(start) {
+    RoundedCornerShape(topStart = radius.dp)
+} else {
+    RoundedCornerShape(topEnd = radius.dp)
+}
+
+
+fun roundedTop(radius: Int) = RoundedCornerShape(
+    topStart = radius.dp,
+    topEnd = radius.dp
+)

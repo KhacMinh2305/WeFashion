@@ -2,6 +2,8 @@ package com.minhdk.wefashion.presentation.ui.screen.home.product.detail.componen
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.minhdk.wefashion.R
 import com.minhdk.wefashion.presentation.ui.theme.Black
 
@@ -28,22 +31,17 @@ fun ProductDetailScreenHeader(
             Icon(
                 painter = painterResource(R.drawable.ic_back),
                 tint = Black,
-                contentDescription = "Back"
+                contentDescription = "Back",
+                modifier = Modifier.size(24.dp)
             )
         }
+
         Text(
             text = "Product Detail",
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Black,
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(1f)
         )
     }
-}
-
-@Preview
-@Composable
-fun ProductDetailScreenHeaderPreview() {
-    ProductDetailScreenHeader(
-        modifier = Modifier.fillMaxWidth()
-    )
 }
