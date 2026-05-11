@@ -1,10 +1,10 @@
 package com.minhdk.wefashion.infrastructure.mapper.model
 
 import com.minhdk.wefashion.domain.data.product.DtoProduct
-import com.minhdk.wefashion.domain.data.product.DtoProductColor
+import com.minhdk.wefashion.domain.data.product.DtoColor
 import com.minhdk.wefashion.domain.data.product.DtoProductDetail
 import com.minhdk.wefashion.domain.data.product.DtoProductShop
-import com.minhdk.wefashion.domain.data.product.DtoProductSize
+import com.minhdk.wefashion.domain.data.product.DtoSize
 import com.minhdk.wefashion.domain.data.product.DtoProductSku
 import com.minhdk.wefashion.domain.data.product.DtoProductsByShop
 import com.minhdk.wefashion.infrastructure.database.room.entity.EntityProduct
@@ -145,8 +145,8 @@ fun EntitySku.toDtoProductSku(): DtoProductSku {
         sku = sku,
         amount = amount,
         price = price,
-        size = DtoProductSize(id = sizeId, name = sizeName),
-        color = DtoProductColor(id = colorId, rgb = colorRgb)
+        size = DtoSize(id = sizeId, name = sizeName),
+        color = DtoColor(id = colorId, rgb = colorRgb)
     )
 }
 

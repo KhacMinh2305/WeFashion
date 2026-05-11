@@ -8,6 +8,7 @@ import com.minhdk.wefashion.infrastructure.remote.api.details.CouponApiService
 import com.minhdk.wefashion.infrastructure.remote.api.details.ProductApiService
 import com.minhdk.wefashion.infrastructure.remote.api.details.SearchApiService
 import com.minhdk.wefashion.infrastructure.remote.api.details.UserApiService
+import com.minhdk.wefashion.infrastructure.remote.api.details.CartApiService
 
 interface DataApiService :
     AddressApiService,
@@ -16,4 +17,5 @@ interface DataApiService :
     AccountApiService,
     UserApiService,
     ProductApiService,
-    SearchApiService {}
+    SearchApiService,
+    CartApiService {}

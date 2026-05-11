@@ -7,6 +7,7 @@ import com.minhdk.wefashion.domain.repository.CouponRepository
 import com.minhdk.wefashion.domain.repository.ProductRepository
 import com.minhdk.wefashion.domain.repository.SearchRepository
 import com.minhdk.wefashion.domain.repository.UserRepository
+import com.minhdk.wefashion.domain.repository.CartRepository
 import com.minhdk.wefashion.infrastructure.datasource.account.local.LocalAccountDataSource
 import com.minhdk.wefashion.infrastructure.datasource.account.local.LocalAccountDataSourceImpl
 import com.minhdk.wefashion.infrastructure.datasource.account.remote.RemoteAccountDataSource
@@ -29,6 +30,8 @@ import com.minhdk.wefashion.infrastructure.datasource.user.local.LocalUserDataSo
 import com.minhdk.wefashion.infrastructure.datasource.user.local.LocalUserDataSourceImpl
 import com.minhdk.wefashion.infrastructure.datasource.user.remote.RemoteUserDataSource
 import com.minhdk.wefashion.infrastructure.datasource.user.remote.RemoteUserDataSourceImpl
+import com.minhdk.wefashion.infrastructure.datasource.cart.remote.RemoteCartDataSource
+import com.minhdk.wefashion.infrastructure.datasource.cart.remote.RemoteCartDataSourceImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.AccountRepositoryImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.AuthenticationRepositoryImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.CategoryRepositoryImpl
@@ -36,6 +39,7 @@ import com.minhdk.wefashion.infrastructure.repositoryimpl.CouponRepositoryImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.ProductRepositoryImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.SearchRepositoryImpl
 import com.minhdk.wefashion.infrastructure.repositoryimpl.UserRepositoryImpl
+import com.minhdk.wefashion.infrastructure.repositoryimpl.CartRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -154,4 +158,15 @@ abstract class BindingModule {
         impl: SearchRepositoryImpl
     ): SearchRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindRemoteCartDataSource(
+        impl: RemoteCartDataSourceImpl
+    ): RemoteCartDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCartRepository(
+        impl: CartRepositoryImpl
+    ): CartRepository
 }

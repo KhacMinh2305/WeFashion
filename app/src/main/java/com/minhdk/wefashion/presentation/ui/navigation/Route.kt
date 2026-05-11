@@ -94,6 +94,9 @@ sealed class Cart {
 
     @Serializable
     object CartMain: Cart()
+
+    @Serializable
+    data class Coupon(val orderTotal: Int): Cart()
 }
 
 @Serializable

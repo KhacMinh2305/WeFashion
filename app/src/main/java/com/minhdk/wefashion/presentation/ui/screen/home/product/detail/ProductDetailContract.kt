@@ -12,7 +12,9 @@ data class ProductDetailState(
 sealed class ProductDetailIntent {
     data object IncreaseQuantity : ProductDetailIntent()
     data object DecreaseQuantity : ProductDetailIntent()
-    data object AddToCart : ProductDetailIntent()
+    data class AddToCart(val sku: Int, val quantity: Int) : ProductDetailIntent()
 }
 
-sealed class ProductDetailEffect
+sealed class ProductDetailEffect {
+    data class ShowToast(val message: String) : ProductDetailEffect()
+}

@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
@@ -36,13 +36,14 @@ import com.minhdk.wefashion.presentation.ui.screen.authentication.forgot.ForgotP
 import com.minhdk.wefashion.presentation.ui.screen.authentication.login.LoginScreen
 import com.minhdk.wefashion.presentation.ui.screen.authentication.register.RegisterScreen
 import com.minhdk.wefashion.presentation.ui.screen.authentication.verification.VerificationScreen
+import com.minhdk.wefashion.presentation.ui.screen.cart.coupon.CouponScreen
+import com.minhdk.wefashion.presentation.ui.screen.cart.main.CartScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.main.MainScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.product.detail.ProductDetailScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.search.SearchScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.introduce.IntroduceScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScreen
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
-import com.minhdk.wefashion.util.helper.logD
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -121,7 +122,7 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.appFlow(navController: NavHostController, contentPadding: PaddingValues) {
         appFlowHome(navController, contentPadding)
         appFlowOrder(navController)
-        appFlowContact(navController)
+        appFlowCart(navController, contentPadding)
         appFlowSetting(navController)
     }
 
@@ -141,7 +142,7 @@ class MainActivity : ComponentActivity() {
                 ProductDetailScreen(
                     contentPadding = contentPadding
                 ) {
-
+                    handleHomeNavigation(navController, it)
                 }
             }
         }
@@ -156,9 +157,39 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun NavGraphBuilder.appFlowContact(navController: NavHostController) {
+    private fun NavGraphBuilder.appFlowCart(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Cart.CartFlow>(startDestination = Cart.CartMain) {
-            composable<Cart.CartMain> {}
+            composable<Cart.CartMain> { backStackEntry ->
+                val selectedCouponName by backStackEntry.savedStateHandle
+                    .getStateFlow("selectedCouponName", "")
+                    .collectAsState()
+                CartScreen(
+                    contentPadding = contentPadding,
+                    selectedCouponName = selectedCouponName,
+                    onConsumeSelectedCoupon = {
+                        backStackEntry.savedStateHandle["selectedCouponName"] = ""
+                    },
+                    onOpenCoupon = { orderTotal ->
+                        navController.navigate(Cart.Coupon(orderTotal))
+                    }
+                )
+            }
+
+            composable<Cart.Coupon> { backStackEntry ->
+                val route = backStackEntry.toRoute<Cart.Coupon>()
+                CouponScreen(
+                    contentPadding = contentPadding,
+                    orderTotal = route.orderTotal,
+                    onSelectCoupon = { coupon ->
+                        val couponName = coupon.name ?: return@CouponScreen
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("selectedCouponName", couponName)
+                        navController.navigateUp()
+                    },
+                    onBack = { navController.navigateUp() }
+                )
+            }
         }
     }
 
@@ -190,6 +221,7 @@ class MainActivity : ComponentActivity() {
             destination.hasRoute<Order.OrderTracking>() -> pos = 1
 
             destination.hasRoute<Cart.CartMain>() -> pos = 2
+            destination.hasRoute<Cart.Coupon>() -> pos = 2
 
             destination.hasRoute<Setting.General>() -> pos = 3
         }
