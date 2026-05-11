@@ -9,13 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.minhdk.wefashion.presentation.ui.navigation.Home
@@ -26,6 +26,8 @@ import com.minhdk.wefashion.presentation.ui.screen.home.product.detail.component
 import com.minhdk.wefashion.presentation.ui.screen.home.product.detail.component.ProductScreenDetailShopInfo
 import com.minhdk.wefashion.presentation.ui.theme.Background
 import com.minhdk.wefashion.presentation.ui.theme.roundedTop
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.minhdk.wefashion.util.helper.logD
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -33,13 +35,24 @@ fun ProductDetailScreen(
     contentPadding: PaddingValues,
     onNavigate: (Home) -> Unit = {}
 ) {
+
+    val viewmodel: ProductDetailViewModel = hiltViewModel()
+    val uiState = viewmodel.uiState.collectAsStateWithLifecycle().value
+
+    val productDetail = uiState.productDetail
+    val product = productDetail?.product
+    val shop = productDetail?.shop
+    val price = productDetail?.sku?.firstOrNull()?.price?.toFloat() ?: 0f
+    val imageUrl = product?.imageUrl
+        ?: "https://cdn.sachhayonline.com/wp-content/uploads/2026/01/cho-meme-hai.jpg"
+
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier.fillMaxSize().padding(contentPadding)
     ) {
 
         GlideImage(
-            model = "https://cdn.sachhayonline.com/wp-content/uploads/2026/01/cho-meme-hai.jpg",
+            model = imageUrl,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -67,17 +80,18 @@ fun ProductDetailScreen(
 
             item {
                 ProductInfo(
-                    title = "Doan Khac Minh",
-                    rating = 4.5f,
-                    description = "Lorem ipsum là một đoạn văn bản giả hoặc văn bản giữ chỗ thường được sử dụng trong thiết kế đồ họa, xuất bản và phát triển web."
+                    title = product?.name ?: "",
+                    rating = product?.rating?.toFloat() ?: 0f,
+                    description = product?.description ?: ""
                 )
 
                 Spacer(modifier = Modifier.height(15.dp))
 
                 ProductScreenDetailShopInfo(
-                    avatarUrl = "https://cdn.sachhayonline.com/wp-content/uploads/2026/01/cho-meme-hai.jpg",
-                    name = "Doan Khac Minh",
-                    followers = 1000
+                    avatarUrl = shop?.avatarUrl
+                        ?: "https://cdn.sachhayonline.com/wp-content/uploads/2026/01/cho-meme-hai.jpg",
+                    name = shop?.name ?: "",
+                    followers = shop?.followers ?: 0
                 )
             }
 
@@ -85,17 +99,17 @@ fun ProductDetailScreen(
                 Spacer(modifier = Modifier.height(25.dp))
 
                 ProductScreenDetailQuantityChanger(
-                    1, {}, {}
+                    uiState.quantity,
+                    { viewmodel.handle(ProductDetailIntent.DecreaseQuantity) },
+                    { viewmodel.handle(ProductDetailIntent.IncreaseQuantity) }
                 )
             }
 
             item {
                 Spacer(modifier = Modifier.height(15.dp))
 
-                ProductDetailScreenCharge(
-                    23.01f
-                ) {
-
+                ProductDetailScreenCharge(price) {
+                    viewmodel.handle(ProductDetailIntent.AddToCart)
                 }
             }
 

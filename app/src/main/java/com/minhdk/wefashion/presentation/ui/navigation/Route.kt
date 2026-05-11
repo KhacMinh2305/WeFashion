@@ -59,9 +59,6 @@ sealed class Home {
     @Serializable
     data object Main: Home()
 
-//    @Serializable
-//    object Profile: Home()
-
     @Serializable
     object Search: Home()
 

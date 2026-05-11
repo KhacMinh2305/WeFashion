@@ -86,15 +86,9 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.onboardingFlow(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Onboarding.OnboardingFlow>(startDestination = Onboarding.Splash) {
             composable<Onboarding.Splash> {
-                LaunchedEffect(Unit) {
-                    logD("NAV", "Splash created")
-                }
                 SplashScreen(contentPadding) { navigateOnboarding(navController, it) }
             }
             composable<Onboarding.Introduce> {
-                LaunchedEffect(Unit) {
-                    logD("NAV", "Introduce created")
-                }
                 IntroduceScreen(contentPadding) { navigateOnboarding(navController, it) }
             }
         }
@@ -103,9 +97,6 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.authenticationFlow(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Authentication.AuthFlow>(startDestination = Authentication.Login) {
             composable<Authentication.Login> {
-                LaunchedEffect(Unit) {
-                    logD("NAV", "Login created")
-                }
                 LoginScreen(contentPadding) { navigateAuthentication(navController, it) }
             }
             composable<Authentication.Register> {
@@ -137,9 +128,6 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.appFlowHome(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Home.HomeFlow>(startDestination = Home.Main) {
             composable<Home.Main> {
-                LaunchedEffect(Unit) {
-                    logD("NAV", "Main created")
-                }
                 MainScreen(contentPadding) {
                     handleHomeNavigation(navController, it)
                 }
@@ -150,9 +138,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
             composable<Home.ProductDetail> {
-                LaunchedEffect(Unit) {
-                    logD("NAV", "ProductDetail created")
-                }
                 ProductDetailScreen(
                     contentPadding = contentPadding
                 ) {
@@ -165,9 +150,6 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.appFlowOrder(navController: NavHostController) {
         navigation<Order.OrderFlow>(startDestination = Order.MyOrder) {
             composable<Order.MyOrder> {
-                LaunchedEffect(Unit) {
-                    logD("NAV", "MyOrder created")
-                }
             }
             composable<Order.OrderDetail> {}
             composable<Order.OrderTracking> {}
@@ -279,17 +261,14 @@ class MainActivity : ComponentActivity() {
     private fun handleHomeNavigation(navController: NavHostController, route: Home) {
         when (route) {
             is Home.Main -> {
-                logD("NAV", "navigate to Main")
                 navController.navigate(Home.Main)
             }
 
             is Home.Search -> {
-                logD("NAV", "navigate to Search")
                 navController.navigate(Home.Search)
             }
 
             is Home.ProductDetail -> {
-                logD("NAV", "navigate to ProductDetail")
                 navController.navigate(Home.ProductDetail(route.productId))
             }
 

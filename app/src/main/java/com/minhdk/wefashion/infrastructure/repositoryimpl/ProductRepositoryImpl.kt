@@ -1,5 +1,6 @@
 package com.minhdk.wefashion.infrastructure.repositoryimpl
 
+import com.google.android.datatransport.runtime.firebase.transport.LogEventDropped
 import com.minhdk.wefashion.domain.data.RequestResult
 import com.minhdk.wefashion.domain.data.product.DtoProduct
 import com.minhdk.wefashion.domain.data.product.DtoProductDetail
@@ -14,6 +15,7 @@ import com.minhdk.wefashion.infrastructure.mapper.model.toDtoProductsByShop
 import com.minhdk.wefashion.infrastructure.mapper.model.toEntityProduct
 import com.minhdk.wefashion.infrastructure.mapper.model.toEntityShop
 import com.minhdk.wefashion.infrastructure.mapper.model.toEntitySku
+import com.minhdk.wefashion.util.helper.logD
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -82,17 +84,17 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun getProductDetails(id: Int): RequestResult<DtoProductDetail> {
         return try {
-            val localProduct = localSource.getProductById(id)
-            val localSkus = localSource.getSkusByProductId(id)
-            val localShop = localProduct?.shopId?.let { localSource.getShopById(it) }
-            if (localProduct != null && localShop != null && localSkus.isNotEmpty()) {
-                val detail = DtoProductDetail(
-                    product = localProduct.toDtoProduct(),
-                    sku = localSkus.map { it.toDtoProductSku() },
-                    shop = localShop.toDtoProductShop()
-                )
-                return RequestResult.Success(detail)
-            }
+//            val localProduct = localSource.getProductById(id)
+//            val localSkus = localSource.getSkusByProductId(id)
+//            val localShop = localProduct?.shopId?.let { localSource.getShopById(it) }
+//            if (localProduct != null && localShop != null && localSkus.isNotEmpty()) {
+//                val detail = DtoProductDetail(
+//                    product = localProduct.toDtoProduct(),
+//                    sku = localSkus.map { it.toDtoProductSku() },
+//                    shop = localShop.toDtoProductShop()
+//                )
+//                return RequestResult.Success(detail)
+//            }
 
             val response = remoteSource.getProductDetails(id)
                 ?: throw NoSuchElementException("Product not found for id=$id")
@@ -100,15 +102,16 @@ class ProductRepositoryImpl @Inject constructor(
             val shopEntity = response.shop?.toEntityShop() ?: throw Exception("Important field is null")
             val productEntity = baseProduct.copy(shopId = shopEntity.id)
             val skus = response.sku.orEmpty().mapNotNull { it.toEntitySku(productEntity.id) }
-            localSource.insertProduct(productEntity)
-            localSource.insertShop(shopEntity)
-            if (skus.isNotEmpty()) localSource.insertSkus(skus)
+//            localSource.insertProduct(productEntity)
+//            localSource.insertShop(shopEntity)
+//            if (skus.isNotEmpty()) localSource.insertSkus(skus)
 
             val detail = DtoProductDetail(
                 product = productEntity.toDtoProduct(),
                 sku = skus.map { it.toDtoProductSku() },
                 shop = shopEntity.toDtoProductShop()
             )
+            logD("midas", detail.toString())
             RequestResult.Success(detail)
         } catch (e: Exception) {
             RequestResult.Error(e)
