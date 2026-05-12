@@ -105,6 +105,12 @@ sealed class Cart {
     object Payment: Cart()
 
     @Serializable
+    object Address: Cart()
+
+    @Serializable
+    object CreateAddress: Cart()
+
+    @Serializable
     object Back: Cart()
 }
 

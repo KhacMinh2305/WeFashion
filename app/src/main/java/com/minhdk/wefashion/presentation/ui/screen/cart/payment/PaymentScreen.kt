@@ -34,11 +34,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.minhdk.wefashion.R
-import com.minhdk.wefashion.domain.data.address.DtoAddress
 import com.minhdk.wefashion.domain.data.cart.DtoCartItem
 import com.minhdk.wefashion.domain.data.product.DtoColor
 import com.minhdk.wefashion.presentation.ui.common.BaseButtonBox
 import com.minhdk.wefashion.presentation.ui.screen.cart.main.CartViewModel
+import com.minhdk.wefashion.presentation.ui.screen.cart.address.SelectedAddress
 import com.minhdk.wefashion.presentation.ui.theme.Background
 import com.minhdk.wefashion.presentation.ui.theme.Black
 import com.minhdk.wefashion.presentation.ui.theme.InputBackground
@@ -52,7 +52,8 @@ import java.util.Locale
 fun PaymentScreen(
     contentPadding: PaddingValues,
     onBack: () -> Unit = {},
-    selectedAddress: DtoAddress? = null
+    selectedAddress: SelectedAddress? = null,
+    onEditAddress: () -> Unit = {}
 ) {
     val viewModel: CartViewModel = hiltViewModel()
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -73,7 +74,7 @@ fun PaymentScreen(
         ) {
             PaymentTopBar(onBack = onBack)
 
-            AddressSection(address = selectedAddress, onEdit = {})
+            AddressSection(address = selectedAddress, onEdit = onEditAddress)
 
             SectionTitle(text = "Products (${items.size})")
 
@@ -135,7 +136,7 @@ private fun PaymentTopBar(
 
 @Composable
 private fun AddressSection(
-    address: DtoAddress? = null,
+    address: SelectedAddress? = null,
     onEdit: () -> Unit
 ) {
     Column(
@@ -291,7 +292,7 @@ private fun TotalRow(total: Int) {
     }
 }
 
-private fun formatAddressLine(address: DtoAddress): String {
+private fun formatAddressLine(address: SelectedAddress): String {
     val parts = listOf(address.detail, address.ward, address.district, address.city)
         .filter { it.isNotBlank() }
     return parts.joinToString(", ")

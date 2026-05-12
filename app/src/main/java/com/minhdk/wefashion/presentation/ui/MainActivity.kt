@@ -44,6 +44,9 @@ import com.minhdk.wefashion.presentation.ui.screen.authentication.verification.V
 import com.minhdk.wefashion.presentation.ui.screen.cart.coupon.CouponScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.main.CartScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.payment.PaymentScreen
+import com.minhdk.wefashion.presentation.ui.screen.cart.address.SelectAddressScreen
+import com.minhdk.wefashion.presentation.ui.screen.cart.address.SelectedAddress
+import com.minhdk.wefashion.presentation.ui.screen.cart.create_address.CreateAddressScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.main.MainScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.product.detail.ProductDetailScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.search.SearchScreen
@@ -215,10 +218,50 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
-            composable<Cart.Payment> {
+            composable<Cart.Payment> { backStackEntry ->
+                val selectedAddress by backStackEntry.savedStateHandle
+                    .getStateFlow("selectedAddress", null as SelectedAddress?)
+                    .collectAsState()
                 PaymentScreen(
                     contentPadding = contentPadding,
-                    onBack = { handleCartNavigation(navController, Cart.Back) }
+                    selectedAddress = selectedAddress,
+                    onBack = { handleCartNavigation(navController, Cart.Back) },
+                    onEditAddress = { handleCartNavigation(navController, Cart.Address) }
+                )
+            }
+
+            composable<Cart.Address> { backStackEntry ->
+                val createdAddressId by backStackEntry.savedStateHandle
+                    .getStateFlow("createdAddressId", null as Int?)
+                    .collectAsState()
+                SelectAddressScreen(
+                    contentPadding = contentPadding,
+                    onBack = { handleCartNavigation(navController, Cart.Back) },
+                    createAddress = {
+                        handleCartNavigation(navController, Cart.CreateAddress)
+                    },
+                    onConfirm = { selected ->
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("selectedAddress", selected)
+                        handleCartNavigation(navController, Cart.Back)
+                    },
+                    createdAddressId = createdAddressId,
+                    onConsumeCreatedAddress = {
+                        backStackEntry.savedStateHandle["createdAddressId"] = null
+                    }
+                )
+            }
+
+            composable<Cart.CreateAddress> {
+                CreateAddressScreen(
+                    contentPadding = contentPadding,
+                    onCreated = { address ->
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("createdAddressId", address.id)
+                        navController.navigateUp()
+                    }
                 )
             }
         }
@@ -257,6 +300,8 @@ class MainActivity : ComponentActivity() {
             destination.hasRoute<Cart.CartMain>() -> pos = 2
             destination.hasRoute<Cart.Coupon>() -> pos = 2
             destination.hasRoute<Cart.Payment>() -> pos = 2
+            destination.hasRoute<Cart.Address>() -> pos = 2
+            destination.hasRoute<Cart.CreateAddress>() -> pos = 2
 
             destination.hasRoute<Setting.General>() -> pos = 3
         }
@@ -361,6 +406,14 @@ class MainActivity : ComponentActivity() {
                 navController.navigate(Cart.Payment)
             }
 
+            is Cart.Address -> {
+                navController.navigate(Cart.Address)
+            }
+
+            is Cart.CreateAddress -> {
+                navController.navigate(Cart.CreateAddress)
+            }
+
             is Cart.Back -> {
                 navController.navigateUp()
             }
@@ -370,27 +423,3 @@ class MainActivity : ComponentActivity() {
     }
 
 }
-
-//private val TURTLE_TOWER_POINT = GeoPoint(latitude = 21.027778, longitude = 105.852222)
-//private const val INITIAL_CAMERA_ZOOM = 12.0
-//
-//@Composable
-//fun MapScreen() {
-//    val initialCameraOptions: InitialCameraOptions = InitialCameraOptions.LocationBased(
-//        position = TURTLE_TOWER_POINT,
-//        zoom = INITIAL_CAMERA_ZOOM,
-//    )
-//    val mapDisplayInfrastructure = MapDisplayInfrastructure(
-//        sdkContext = TomTomSdk.sdkContext,
-//    ) {
-//        locationInfrastructure = MapLocationInfrastructure {
-//            locationProvider = TomTomSdk.locationProvider
-//        }
-//    }
-//    val mapViewState = rememberMapViewState(initialCameraOptions = initialCameraOptions)
-//
-//    TomTomMap(
-//        state = mapViewState,
-//        infrastructure = mapDisplayInfrastructure,
-//    )
-//}
