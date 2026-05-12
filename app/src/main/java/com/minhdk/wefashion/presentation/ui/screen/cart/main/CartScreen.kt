@@ -61,7 +61,8 @@ fun CartScreen(
     contentPadding: PaddingValues,
     selectedCouponName: String,
     onConsumeSelectedCoupon: () -> Unit,
-    onOpenCoupon: (Int) -> Unit
+    onOpenCoupon: (Int) -> Unit,
+    onCheckout: () -> Unit
 ) {
     val viewModel: CartViewModel = hiltViewModel()
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -140,6 +141,7 @@ fun CartScreen(
             onPromoChanged = { viewModel.onIntent(CartIntent.PromoCodeChanged(it)) },
             onOpenCoupon = { onOpenCoupon(totalBeforeDiscount) },
             hasAppliedCoupon = uiState.appliedCoupon != null,
+            onCheckout = onCheckout,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
@@ -309,6 +311,7 @@ private fun CartSummaryPanel(
     onPromoChanged: (String) -> Unit,
     onOpenCoupon: () -> Unit,
     hasAppliedCoupon: Boolean,
+    onCheckout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -346,7 +349,9 @@ private fun CartSummaryPanel(
             txt = "Checkout",
             bgColor = Primary,
             contentColor = TextPrimaryLight
-        ) { }
+        ) {
+            onCheckout()
+        }
     }
 }
 

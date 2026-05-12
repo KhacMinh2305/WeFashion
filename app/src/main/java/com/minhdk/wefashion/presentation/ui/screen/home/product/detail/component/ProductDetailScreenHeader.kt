@@ -32,13 +32,5 @@ fun ProductDetailScreenHeader(
                 modifier = Modifier.size(24.dp)
             )
         }
-
-        Text(
-            text = "Product Detail",
-            style = MaterialTheme.typography.bodyMedium,
-            color = Black,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.weight(1f)
-        )
     }
 }

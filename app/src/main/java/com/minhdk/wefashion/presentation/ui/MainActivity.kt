@@ -5,13 +5,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraphBuilder
@@ -23,6 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.minhdk.wefashion.infrastructure.remote.api.DataApiService
+import com.minhdk.wefashion.presentation.ui.navigation.AppStarter
 import com.minhdk.wefashion.presentation.ui.navigation.Authentication
 import com.minhdk.wefashion.presentation.ui.navigation.Cart
 import com.minhdk.wefashion.presentation.ui.navigation.Home
@@ -38,12 +43,14 @@ import com.minhdk.wefashion.presentation.ui.screen.authentication.register.Regis
 import com.minhdk.wefashion.presentation.ui.screen.authentication.verification.VerificationScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.coupon.CouponScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.main.CartScreen
+import com.minhdk.wefashion.presentation.ui.screen.cart.payment.PaymentScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.main.MainScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.product.detail.ProductDetailScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.search.SearchScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.introduce.IntroduceScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScreen
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
+import com.minhdk.wefashion.util.helper.logD
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -53,6 +60,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var service: DataApiService
 
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -61,6 +69,19 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+                LaunchedEffect(Unit) {
+                    navController.currentBackStack.collect { backstack ->
+                        logD("midas", "----------------------backstack----------------------")
+                        backstack.forEach { entry ->
+                            logD("midas", entry.destination.route)
+                        }
+                    }
+                }
+
+                LaunchedEffect(Unit) {
+                    navController.navigate(Onboarding.OnboardingFlow)
+                }
 
                 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
                 Scaffold(
@@ -170,7 +191,10 @@ class MainActivity : ComponentActivity() {
                         backStackEntry.savedStateHandle["selectedCouponName"] = ""
                     },
                     onOpenCoupon = { orderTotal ->
-                        navController.navigate(Cart.Coupon(orderTotal))
+                        handleCartNavigation(navController, Cart.Coupon(orderTotal))
+                    },
+                    onCheckout = {
+                        handleCartNavigation(navController, Cart.Payment)
                     }
                 )
             }
@@ -187,7 +211,14 @@ class MainActivity : ComponentActivity() {
                             ?.set("selectedCouponName", couponName)
                         navController.navigateUp()
                     },
-                    onBack = { navController.navigateUp() }
+                    onBack = { handleCartNavigation(navController, Cart.Back) }
+                )
+            }
+
+            composable<Cart.Payment> {
+                PaymentScreen(
+                    contentPadding = contentPadding,
+                    onBack = { handleCartNavigation(navController, Cart.Back) }
                 )
             }
         }
@@ -201,7 +232,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun SetupNavigation(navController: NavHostController, contentPadding: PaddingValues) {
-        NavHost(navController = navController, startDestination = Onboarding.OnboardingFlow) {
+        NavHost(navController = navController, startDestination = AppStarter) {
+            composable<AppStarter> {
+                Box(modifier = Modifier.fillMaxSize().background(Color.White))
+            }
             onboardingFlow(navController, contentPadding)
             authenticationFlow(navController, contentPadding)
             appFlow(navController, contentPadding)
@@ -222,6 +256,7 @@ class MainActivity : ComponentActivity() {
 
             destination.hasRoute<Cart.CartMain>() -> pos = 2
             destination.hasRoute<Cart.Coupon>() -> pos = 2
+            destination.hasRoute<Cart.Payment>() -> pos = 2
 
             destination.hasRoute<Setting.General>() -> pos = 3
         }
@@ -239,7 +274,7 @@ class MainActivity : ComponentActivity() {
         }
 
         navController.navigate(tabRoute) {
-            popUpTo(Home.HomeFlow) {
+            popUpTo(AppStarter) {
                 saveState = true
             }
             launchSingleTop = true
@@ -305,6 +340,28 @@ class MainActivity : ComponentActivity() {
             }
 
             is Home.Back -> {
+                navController.navigateUp()
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun handleCartNavigation(navController: NavHostController, route: Cart) {
+        when (route) {
+            is Cart.CartMain -> {
+                navController.navigate(Cart.CartMain)
+            }
+
+            is Cart.Coupon -> {
+                navController.navigate(Cart.Coupon(route.orderTotal))
+            }
+
+            is Cart.Payment -> {
+                navController.navigate(Cart.Payment)
+            }
+
+            is Cart.Back -> {
                 navController.navigateUp()
             }
 

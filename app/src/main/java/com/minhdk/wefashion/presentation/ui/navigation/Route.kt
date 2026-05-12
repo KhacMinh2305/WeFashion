@@ -3,6 +3,9 @@ package com.minhdk.wefashion.presentation.ui.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
+object AppStarter
+
+@Serializable
 sealed class Onboarding {
 
     @Serializable
@@ -97,6 +100,12 @@ sealed class Cart {
 
     @Serializable
     data class Coupon(val orderTotal: Int): Cart()
+
+    @Serializable
+    object Payment: Cart()
+
+    @Serializable
+    object Back: Cart()
 }
 
 @Serializable
