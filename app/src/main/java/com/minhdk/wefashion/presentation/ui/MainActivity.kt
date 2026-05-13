@@ -1,6 +1,8 @@
 package com.minhdk.wefashion.presentation.ui
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -55,6 +57,7 @@ import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScree
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
 import com.minhdk.wefashion.util.helper.logD
 import dagger.hilt.android.AndroidEntryPoint
+import java.security.MessageDigest
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -424,4 +427,58 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+//    fun getSigningSHA256(packageManager: PackageManager, packageName: String): List<String> {
+//
+//        val signatures = mutableListOf<String>()
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//
+//            val packageInfo = packageManager.getPackageInfo(
+//                packageName,
+//                PackageManager.GET_SIGNING_CERTIFICATES
+//            )
+//
+//            val signingInfo = packageInfo.signingInfo
+//
+//            val apkSigners = signingInfo?.apkContentsSigners ?: return emptyList()
+//
+//            for (signature in apkSigners) {
+//
+//                val digest = MessageDigest.getInstance("SHA-256")
+//                    .digest(signature.toByteArray())
+//
+//                val sha256 = digest.joinToString(":") {
+//                    "%02X".format(it)
+//                }
+//
+//                signatures.add(sha256)
+//            }
+//
+//        } else {
+//
+//            @Suppress("DEPRECATION")
+//            val packageInfo = packageManager.getPackageInfo(
+//                packageName,
+//                PackageManager.GET_SIGNATURES
+//            )
+//
+//            @Suppress("DEPRECATION")
+//            for (signature in packageInfo.signatures ?: return emptyList()) {
+//
+//                val digest = MessageDigest.getInstance("SHA-256")
+//                    .digest(signature.toByteArray())
+//
+//                val sha256 = digest.joinToString(":") {
+//                    "%02X".format(it)
+//                }
+//
+//                signatures.add(sha256)
+//            }
+//        }
+//
+//        return signatures
+//    }
+
 }
+
+// C6:26:39:79:AF:D5:86:54:D8:5E:49:36:A6:0B:F1:8D:8E:22:54:14:05:5E:73:0A:6A:53:94:29:F2:43:33:45

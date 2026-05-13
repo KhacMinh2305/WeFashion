@@ -22,3 +22,7 @@ val TextSecondary = Color(0xFF9CA3AF)
 val TextPrimaryLight = Color(0xFFFFFFFF)
 val InputBackground = Color(0xFFF3F4F6)
 val DisableButton = Color(0xFFC7C7C7)
+
+val InProgress = Color(0xFF3F5BE5)
+val Canceled = Color(0xFFDE3857)
+val Succeed = Color(0xFF3CDA3F)
