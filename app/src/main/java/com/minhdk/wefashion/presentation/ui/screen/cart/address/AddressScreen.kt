@@ -191,7 +191,7 @@ private fun LocationSearchBox(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = "San Diego, CA",
+            text = "Create a new address",
             style = MaterialTheme.typography.bodyMedium,
             color = Black,
             modifier = Modifier.weight(1f)

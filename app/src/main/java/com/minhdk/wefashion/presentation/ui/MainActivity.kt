@@ -262,7 +262,9 @@ class MainActivity : ComponentActivity() {
                             ?.set("createdAddressId", address.id)
                         navController.navigateUp()
                     }
-                )
+                ) {
+                    handleCartNavigation(navController, it)
+                }
             }
         }
     }

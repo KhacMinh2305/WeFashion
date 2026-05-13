@@ -5,8 +5,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,8 +36,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,13 +51,13 @@ import com.minhdk.wefashion.R
 import com.minhdk.wefashion.domain.data.address.DtoAddress
 import com.minhdk.wefashion.presentation.ui.common.BaseButtonBox
 import com.minhdk.wefashion.presentation.ui.common.BaseInputText
+import com.minhdk.wefashion.presentation.ui.navigation.Cart
 import com.minhdk.wefashion.presentation.ui.theme.Background
 import com.minhdk.wefashion.presentation.ui.theme.DisableButton
 import com.minhdk.wefashion.presentation.ui.theme.Primary
 import com.minhdk.wefashion.presentation.ui.theme.TextPrimaryLight
 import com.minhdk.wefashion.presentation.ui.theme.TextSecondary
 import com.minhdk.wefashion.presentation.ui.theme.roundedTop
-import com.minhdk.wefashion.util.helper.logD
 import com.minhdk.wefashion.util.permission.rememberPermissionLauncher
 import com.tomtom.sdk.init.TomTomSdk
 import com.tomtom.sdk.location.GeoPoint
@@ -69,7 +75,8 @@ private const val INITIAL_CAMERA_ZOOM = 12.0
 @Composable
 fun CreateAddressScreen(
     contentPadding: PaddingValues,
-    onCreated: (DtoAddress) -> Unit
+    onCreated: (DtoAddress) -> Unit,
+    onNavigate: (Cart) -> Unit
 ) {
     val viewModel: CreateAddressViewModel = hiltViewModel()
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -100,19 +107,19 @@ fun CreateAddressScreen(
 
     val content: @Composable () -> Unit = {
         Box(
-            modifier = Modifier.fillMaxSize().padding(contentPadding)
+            modifier = Modifier.fillMaxSize()
         ) {
 
             MapBox(modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.5f)
+                .fillMaxHeight(0.7f)
                 .align(Alignment.TopCenter)) { lat, long ->
                 viewModel.onIntent(CreateAddressIntent.PositionChanged(lat, long))
             }
 
             CreateAddressForm(modifier = Modifier
                 .fillMaxWidth().
-                fillMaxHeight(0.6f)
+                fillMaxHeight(0.4f)
                 .background(color = Background, shape = roundedTop(16))
                 .align(Alignment.BottomCenter),
                 name = uiState.name,
@@ -138,41 +145,60 @@ fun CreateAddressScreen(
         }
     }
 
-
-    if(hasPermission) {
-        content()
-    } else {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+    Box(modifier = Modifier.fillMaxSize().padding(contentPadding)) {
+        if(hasPermission) {
+            content()
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Location permissions are required to create an address",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary,
-                    modifier = Modifier.padding(horizontal = 32.dp),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                )
-                BaseButtonBox(
-                    txt = "Grant Permissions",
-                    bgColor = Primary,
-                    contentColor = TextPrimaryLight,
-                    modifier = Modifier.width(250.dp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    scope.launch {
-                        val granted = permissionLauncher.request()
-                        hasPermission = context.hasMapPermissions()
-                        if (!granted) context.goToSettings()
+                    Text(
+                        text = "Location permissions are required to create an address",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextSecondary,
+                        modifier = Modifier.padding(horizontal = 32.dp),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                    BaseButtonBox(
+                        txt = "Grant Permissions",
+                        bgColor = Primary,
+                        contentColor = TextPrimaryLight,
+                        modifier = Modifier.width(250.dp)
+                    ) {
+                        scope.launch {
+                            val granted = permissionLauncher.request()
+                            hasPermission = context.hasMapPermissions()
+                            if (!granted) context.goToSettings()
+                        }
                     }
                 }
             }
         }
-    }
 
+        Box(
+            modifier = Modifier
+                .size(54.dp)
+                .padding(12.dp)
+                .clip(CircleShape)
+                .background(Color.White)
+                .border(BorderStroke(1.dp, TextSecondary.copy(alpha = 0.15f)), CircleShape)
+                .clickable {
+                    onNavigate(Cart.Back)
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
 }
 
 @Composable
