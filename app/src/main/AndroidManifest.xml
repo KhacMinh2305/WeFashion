@@ -28,18 +28,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!--        App link-->
+            <!--            Payment AppLink-->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-
-                <!-- Include one or more domains that should be verified. -->
-                <data android:host="wefashion.app" />
+                <data android:scheme="https"
+                    android:host="wefashionserver.onrender.com"/>
             </intent-filter>
+
         </activity>
 
         <!-- FCM service -->
