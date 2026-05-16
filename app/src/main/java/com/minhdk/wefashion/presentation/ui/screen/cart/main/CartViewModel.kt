@@ -1,13 +1,20 @@
 package com.minhdk.wefashion.presentation.ui.screen.cart.main
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.minhdk.wefashion.domain.data.RequestResult
 import com.minhdk.wefashion.domain.data.coupon.DtoCoupon
 import com.minhdk.wefashion.domain.repository.AccountRepository
 import com.minhdk.wefashion.domain.repository.CartRepository
 import com.minhdk.wefashion.domain.repository.CouponRepository
+import com.minhdk.wefashion.domain.repository.OrderRepository
+import com.minhdk.wefashion.domain.repository.UserRepository
+import com.minhdk.wefashion.presentation.ui.navigation.Cart
+import com.minhdk.wefashion.util.helper.logD
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,12 +25,30 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val accountRepo: AccountRepository,
+    private val userRepo: UserRepository,
     private val cartRepo: CartRepository,
     private val couponRepo: CouponRepository,
-    private val accountRepo: AccountRepository
+    private val orderRepo: OrderRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CartState(isLoading = true))
+    val route by lazy {
+        return@lazy try {
+            savedStateHandle.toRoute<Cart.Payment>()
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private val _uiState = MutableStateFlow(
+        CartState(
+            discount = route?.discount,
+            shippingFee = route?.shippingFee,
+            total = route?.orderTotal,
+            isLoading = true
+        )
+    )
     val uiState = _uiState.asStateFlow()
 
     private val _effect = Channel<CartEffect>()
@@ -35,25 +60,32 @@ class CartViewModel @Inject constructor(
 
     fun onIntent(intent: CartIntent) {
         when (intent) {
-            CartIntent.LoadCart -> loadCart()
+            is CartIntent.LoadCart -> loadCart()
             is CartIntent.ToggleSelectSku -> toggleSelect(intent.sku)
-            is CartIntent.UpdateSkuQuantity -> updateSkuQuantity(intent.sku, intent.change, intent.amount)
+            is CartIntent.UpdateSkuQuantity -> updateSkuQuantity(
+                intent.sku,
+                intent.change,
+                intent.amount
+            )
+
             is CartIntent.PromoCodeChanged -> {
                 _uiState.update { it.copy(promoCode = intent.value) }
             }
-            CartIntent.ApplyPromo -> applyPromo()
+
+            is CartIntent.ApplyPromo -> applyPromo()
+            is CartIntent.Checkout -> checkout(intent.addressId)
         }
     }
 
     private fun loadCart() {
-        val userId = accountRepo.getCurrentAccount()?.id
-        if (userId == null) {
-            _effect.trySend(CartEffect.ShowToast("Vui lòng đăng nhập"))
-            _uiState.update { it.copy(isLoading = false) }
-            return
-        }
-
         viewModelScope.launch {
+            val res = userRepo.getCachedUser()
+            if (res is RequestResult.Error) {
+                _effect.trySend(CartEffect.ShowToast("Vui lòng đăng nhập"))
+                _uiState.update { it.copy(isLoading = false) }
+                return@launch
+            }
+            val userId = (res as RequestResult.Success).data.id
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             when (val result = cartRepo.getCart(userId)) {
                 is RequestResult.Success -> {
@@ -67,8 +99,14 @@ class CartViewModel @Inject constructor(
                         )
                     }
                 }
+
                 is RequestResult.Error -> {
-                    _uiState.update { it.copy(isLoading = false, errorMessage = result.error.message) }
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = result.error.message
+                        )
+                    }
                     _effect.trySend(CartEffect.ShowToast("Không thể tải giỏ hàng"))
                 }
             }
@@ -102,6 +140,7 @@ class CartViewModel @Inject constructor(
                             )
                         }
                     }
+
                     is RequestResult.Error -> {
                         _effect.trySend(CartEffect.ShowToast("Xóa sản phẩm thất bại"))
                     }
@@ -117,7 +156,8 @@ class CartViewModel @Inject constructor(
                         val cart = state.cart ?: return@update state
                         val items = cart.items.map { item ->
                             if (item.sku == sku) {
-                                val next = if (change == "plus") item.quantity + applied else item.quantity - applied
+                                val next =
+                                    if (change == "plus") item.quantity + applied else item.quantity - applied
                                 item.copy(quantity = next.coerceAtLeast(1))
                             } else {
                                 item
@@ -126,6 +166,7 @@ class CartViewModel @Inject constructor(
                         state.copy(cart = cart.copy(items = items))
                     }
                 }
+
                 is RequestResult.Error -> {
                     _effect.trySend(CartEffect.ShowToast("Cập nhật số lượng thất bại"))
                 }
@@ -149,7 +190,8 @@ class CartViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = couponRepo.getCouponsByUser(userId)) {
                 is RequestResult.Success -> {
-                    val coupon = result.data.coupons.firstOrNull { it.name?.equals(code, true) == true }
+                    val coupon =
+                        result.data.coupons.firstOrNull { it.name?.equals(code, true) == true }
                     if (coupon == null) {
                         _effect.trySend(CartEffect.ShowToast("Mã không hợp lệ"))
                         _uiState.update { it.copy(appliedCoupon = null, discountValue = 0) }
@@ -160,6 +202,7 @@ class CartViewModel @Inject constructor(
                     _uiState.update { it.copy(appliedCoupon = coupon, discountValue = discount) }
                     _effect.trySend(CartEffect.ShowToast("Áp dụng mã thành công"))
                 }
+
                 is RequestResult.Error -> {
                     _effect.trySend(CartEffect.ShowToast("Không thể áp dụng mã"))
                 }
@@ -179,4 +222,51 @@ class CartViewModel @Inject constructor(
         }
         return discount.coerceAtMost(coupon.maxDiscount)
     }
+
+    private fun checkout(addressId: Int?) {
+        logD("midas", "start checkout")
+        if (route == null) return
+        logD("midas", "Step 1")
+        viewModelScope.launch(Dispatchers.IO) {
+
+            _uiState.value = _uiState.value.copy(isProcessingPayment = true)
+
+            val showError: (String) -> Unit = {
+                _uiState.value = _uiState.value.copy(isProcessingPayment = false)
+                _effect.trySend(CartEffect.ShowToast(it))
+            }
+
+            try {
+                val userId = (userRepo.getCachedUser() as RequestResult.Success).data.id
+                with(_uiState.value) {
+                    val result = orderRepo.createOrder(
+                        userId,
+                        discount = discount ?: return@launch,
+                        shippingFee = shippingFee ?: return@launch,
+                        total = total ?: return@launch,
+                        userId = userId,
+                        addressId = addressId ?: run {
+                            showError("No address selected")
+                            return@launch
+                        },
+                        cart = cart ?: return@launch
+                    )
+                    logD("midas", "result: $result")
+                    when(result) {
+                        is RequestResult.Error -> {
+                            showError(result.error.message ?: "Something went wrong")
+                            return@launch
+                        }
+                        is RequestResult.Success -> {
+                            _effect.trySend(CartEffect.StartPaymentProcess(result.data.checkoutUrl))
+                        }
+                    }
+                }
+            } catch (_: Exception) {
+                showError("Something went wrong")
+            }
+        }
+    }
+
+
 }

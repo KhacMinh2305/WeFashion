@@ -1,9 +1,12 @@
 package com.minhdk.wefashion.presentation.ui
 
 import android.annotation.SuppressLint
+import android.app.ComponentCaller
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -28,6 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.minhdk.wefashion.domain.data.address.DtoAddress
 import com.minhdk.wefashion.infrastructure.remote.api.DataApiService
 import com.minhdk.wefashion.presentation.ui.navigation.AppStarter
 import com.minhdk.wefashion.presentation.ui.navigation.Authentication
@@ -47,8 +51,8 @@ import com.minhdk.wefashion.presentation.ui.screen.cart.coupon.CouponScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.main.CartScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.payment.PaymentScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.address.SelectAddressScreen
-import com.minhdk.wefashion.presentation.ui.screen.cart.address.SelectedAddress
 import com.minhdk.wefashion.presentation.ui.screen.cart.create_address.CreateAddressScreen
+import com.minhdk.wefashion.presentation.ui.screen.cart.process_payment.ProcessPaymentScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.main.MainScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.product.detail.ProductDetailScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.search.SearchScreen
@@ -62,9 +66,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var service: DataApiService
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -199,8 +200,8 @@ class MainActivity : ComponentActivity() {
                     onOpenCoupon = { orderTotal ->
                         handleCartNavigation(navController, Cart.Coupon(orderTotal))
                     },
-                    onCheckout = {
-                        handleCartNavigation(navController, Cart.Payment)
+                    onCheckout = { discount, shippingFee, total ->
+                        handleCartNavigation(navController, Cart.Payment(discount, shippingFee, total))
                     }
                 )
             }
@@ -222,14 +223,19 @@ class MainActivity : ComponentActivity() {
             }
 
             composable<Cart.Payment> { backStackEntry ->
+                val route = backStackEntry.toRoute<Cart.Payment>()
                 val selectedAddress by backStackEntry.savedStateHandle
-                    .getStateFlow("selectedAddress", null as SelectedAddress?)
+                    .getStateFlow("selectedAddress", null as DtoAddress?)
                     .collectAsState()
                 PaymentScreen(
                     contentPadding = contentPadding,
                     selectedAddress = selectedAddress,
                     onBack = { handleCartNavigation(navController, Cart.Back) },
-                    onEditAddress = { handleCartNavigation(navController, Cart.Address) }
+                    onEditAddress = { handleCartNavigation(navController, Cart.Address) },
+                    onCheckOut = {
+                        logD("midas", "handle payment link !!!!")
+                        handleCartNavigation(navController, Cart.ProcessCheckout(it))
+                    }
                 )
             }
 
@@ -269,6 +275,11 @@ class MainActivity : ComponentActivity() {
                     handleCartNavigation(navController, it)
                 }
             }
+
+            composable<Cart.ProcessCheckout> {
+                val route = it.toRoute<Cart.ProcessCheckout>()
+                ProcessPaymentScreen(contentPadding = contentPadding, route.paymentLink)
+            }
         }
     }
 
@@ -282,7 +293,9 @@ class MainActivity : ComponentActivity() {
     private fun SetupNavigation(navController: NavHostController, contentPadding: PaddingValues) {
         NavHost(navController = navController, startDestination = AppStarter) {
             composable<AppStarter> {
-                Box(modifier = Modifier.fillMaxSize().background(Color.White))
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White))
             }
             onboardingFlow(navController, contentPadding)
             authenticationFlow(navController, contentPadding)
@@ -408,7 +421,7 @@ class MainActivity : ComponentActivity() {
             }
 
             is Cart.Payment -> {
-                navController.navigate(Cart.Payment)
+                navController.navigate(Cart.Payment(route.discount, route.shippingFee, route.orderTotal))
             }
 
             is Cart.Address -> {
@@ -419,6 +432,10 @@ class MainActivity : ComponentActivity() {
                 navController.navigate(Cart.CreateAddress)
             }
 
+            is Cart.ProcessCheckout -> {
+                navController.navigate(Cart.ProcessCheckout(route.paymentLink))
+            }
+
             is Cart.Back -> {
                 navController.navigateUp()
             }
@@ -427,58 +444,23 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-//    fun getSigningSHA256(packageManager: PackageManager, packageName: String): List<String> {
-//
-//        val signatures = mutableListOf<String>()
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-//
-//            val packageInfo = packageManager.getPackageInfo(
-//                packageName,
-//                PackageManager.GET_SIGNING_CERTIFICATES
-//            )
-//
-//            val signingInfo = packageInfo.signingInfo
-//
-//            val apkSigners = signingInfo?.apkContentsSigners ?: return emptyList()
-//
-//            for (signature in apkSigners) {
-//
-//                val digest = MessageDigest.getInstance("SHA-256")
-//                    .digest(signature.toByteArray())
-//
-//                val sha256 = digest.joinToString(":") {
-//                    "%02X".format(it)
-//                }
-//
-//                signatures.add(sha256)
-//            }
-//
-//        } else {
-//
-//            @Suppress("DEPRECATION")
-//            val packageInfo = packageManager.getPackageInfo(
-//                packageName,
-//                PackageManager.GET_SIGNATURES
-//            )
-//
-//            @Suppress("DEPRECATION")
-//            for (signature in packageInfo.signatures ?: return emptyList()) {
-//
-//                val digest = MessageDigest.getInstance("SHA-256")
-//                    .digest(signature.toByteArray())
-//
-//                val sha256 = digest.joinToString(":") {
-//                    "%02X".format(it)
-//                }
-//
-//                signatures.add(sha256)
-//            }
-//        }
-//
-//        return signatures
-//    }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val uri = intent.data ?: run {
+            Log.d("AppLink", "data is null !!!")
+            return
+        }
+
+        val code = uri.getQueryParameter("code")           // "00"
+        val id = uri.getQueryParameter("id")               // "2e4acf1083304877bf1a8c108b30cccd"
+        val cancel = uri.getQueryParameter("cancel")       // "true"
+        val status = uri.getQueryParameter("status")       // "CANCELLED"
+        val orderCode = uri.getQueryParameter("orderCode") // "803347"
+
+        Log.d("AppLink", "uri=$uri")
+        Log.d("AppLink", "full uri: ${intent.data}")
+        Log.d("AppLink", "query: ${intent.data?.query}")
+        Log.d("AppLink", "status=$status, orderCode=$orderCode")
+    }
 
 }
-
-// C6:26:39:79:AF:D5:86:54:D8:5E:49:36:A6:0B:F1:8D:8E:22:54:14:05:5E:73:0A:6A:53:94:29:F2:43:33:45

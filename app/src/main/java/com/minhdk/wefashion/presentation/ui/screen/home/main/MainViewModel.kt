@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(user = UiState.Loading) }
             accountRepo.getCurrentAccount()?.let { acc ->
-                when (val result = userRpo.getCachedUser(acc.username)) {
+                when (val result = userRpo.getCachedUser()) {
                     is RequestResult.Success -> {
                         _uiState.update { it.copy(user = UiState.Success(result.data)) }
                     }

@@ -9,6 +9,7 @@ import com.minhdk.wefashion.infrastructure.datasource.user.remote.RemoteUserData
 import com.minhdk.wefashion.infrastructure.mapper.helper.user.buildUpdateUserRequest
 import com.minhdk.wefashion.infrastructure.mapper.model.toDtoUser
 import com.minhdk.wefashion.infrastructure.mapper.model.toEntityUser
+import com.minhdk.wefashion.util.helper.logD
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -56,18 +57,14 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun cacheUser(entity: EntityUser) {
+        userCache = entity.toDtoUser()
         localSource.insertUser(entity)
     }
 
-    override suspend fun getCachedUser(username: String): RequestResult<DtoUser> {
-        return try {
-            RequestResult.Success(
-                localSource.getUserByUsername(username)?.toDtoUser()
-                    ?: throw Exception("User not found")
-            )
-        } catch (e: Exception) {
-            RequestResult.Error(e)
-        }
+    override suspend fun getCachedUser(): RequestResult<DtoUser> {
+        return userCache?.let {
+            RequestResult.Success(it)
+        } ?: RequestResult.Error(Exception("User not found"))
     }
 
 }

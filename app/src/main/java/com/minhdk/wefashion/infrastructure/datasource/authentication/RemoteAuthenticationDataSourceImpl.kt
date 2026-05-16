@@ -1,7 +1,7 @@
 package com.minhdk.wefashion.infrastructure.datasource.authentication
 
 import com.minhdk.wefashion.infrastructure.remote.model.token.DataAccessToken
-import com.minhdk.wefashion.infrastructure.remote.api.AuthenticationService
+import com.minhdk.wefashion.infrastructure.remote.api.details.AuthenticationService
 import javax.inject.Inject
 import javax.inject.Singleton
 

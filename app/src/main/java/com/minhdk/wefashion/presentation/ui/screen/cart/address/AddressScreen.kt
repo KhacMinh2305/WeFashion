@@ -47,7 +47,7 @@ fun SelectAddressScreen(
     contentPadding: PaddingValues,
     onBack: () -> Unit,
     createAddress: () -> Unit,
-    onConfirm: (SelectedAddress) -> Unit,
+    onConfirm: (DtoAddress) -> Unit,
     createdAddressId: Int? = null,
     onConsumeCreatedAddress: () -> Unit = {}
 ) {
@@ -57,7 +57,7 @@ fun SelectAddressScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             if (effect is AddressEffect.ConfirmSelection) {
-                onConfirm(effect.address.toSelectedAddress())
+                onConfirm(effect.address)
             }
         }
     }
@@ -255,14 +255,4 @@ private fun formatAddressLine(address: DtoAddress): String {
     val parts = listOf(address.detail, address.ward, address.district, address.city)
         .filter { it.isNotBlank() }
     return parts.joinToString(", ")
-}
-
-private fun DtoAddress.toSelectedAddress(): SelectedAddress {
-    return SelectedAddress(
-        name = name,
-        detail = detail,
-        ward = ward,
-        district = district,
-        city = city
-    )
 }

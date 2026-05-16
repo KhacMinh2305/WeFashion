@@ -1,5 +1,6 @@
 package com.minhdk.wefashion.presentation.ui.screen.cart.payment
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,11 +22,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,11 +37,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.minhdk.wefashion.R
+import com.minhdk.wefashion.domain.data.address.DtoAddress
 import com.minhdk.wefashion.domain.data.cart.DtoCartItem
 import com.minhdk.wefashion.domain.data.product.DtoColor
 import com.minhdk.wefashion.presentation.ui.common.BaseButtonBox
+import com.minhdk.wefashion.presentation.ui.screen.cart.main.CartEffect
+import com.minhdk.wefashion.presentation.ui.screen.cart.main.CartIntent
 import com.minhdk.wefashion.presentation.ui.screen.cart.main.CartViewModel
-import com.minhdk.wefashion.presentation.ui.screen.cart.address.SelectedAddress
 import com.minhdk.wefashion.presentation.ui.theme.Background
 import com.minhdk.wefashion.presentation.ui.theme.Black
 import com.minhdk.wefashion.presentation.ui.theme.InputBackground
@@ -52,13 +57,24 @@ import java.util.Locale
 fun PaymentScreen(
     contentPadding: PaddingValues,
     onBack: () -> Unit = {},
-    selectedAddress: SelectedAddress? = null,
-    onEditAddress: () -> Unit = {}
+    selectedAddress: DtoAddress? = null,
+    onEditAddress: () -> Unit = {},
+    onCheckOut: (String) -> Unit = {}
 ) {
     val viewModel: CartViewModel = hiltViewModel()
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     val items = uiState.cart?.items.orEmpty()
-    val subtotal = items.sumOf { it.price * it.quantity }
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collect {
+            when(it) {
+                is CartEffect.ShowToast -> Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                is CartEffect.StartPaymentProcess -> onCheckOut(it.link)
+            }
+        }
+    }
+
 
     Box(
         modifier = Modifier
@@ -87,13 +103,15 @@ fun PaymentScreen(
                 }
             }
 
-            TotalRow(total = subtotal)
+            TotalRow(total = uiState.total ?: 0)
 
             BaseButtonBox(
                 txt = "Checkout Now",
                 bgColor = Primary,
                 contentColor = TextPrimaryLight
-            ) { }
+            ) {
+                viewModel.onIntent(CartIntent.Checkout(selectedAddress?.id))
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
         }
@@ -136,7 +154,7 @@ private fun PaymentTopBar(
 
 @Composable
 private fun AddressSection(
-    address: SelectedAddress? = null,
+    address: DtoAddress? = null,
     onEdit: () -> Unit
 ) {
     Column(
@@ -292,7 +310,7 @@ private fun TotalRow(total: Int) {
     }
 }
 
-private fun formatAddressLine(address: SelectedAddress): String {
+private fun formatAddressLine(address: DtoAddress): String {
     val parts = listOf(address.detail, address.ward, address.district, address.city)
         .filter { it.isNotBlank() }
     return parts.joinToString(", ")

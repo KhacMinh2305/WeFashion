@@ -5,7 +5,6 @@ import com.minhdk.wefashion.domain.data.search.DtoSearchResult
 import com.minhdk.wefashion.domain.repository.SearchRepository
 import com.minhdk.wefashion.infrastructure.datasource.search.RemoteSearchDataSource
 import com.minhdk.wefashion.infrastructure.mapper.model.toDto
-import com.minhdk.wefashion.util.helper.logD
 import javax.inject.Inject
 import javax.inject.Singleton
 

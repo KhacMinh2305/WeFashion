@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -53,7 +51,6 @@ import java.util.Locale
 import android.widget.Toast
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.graphics.Brush
-import com.minhdk.wefashion.presentation.ui.theme.rounded
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -62,7 +59,7 @@ fun CartScreen(
     selectedCouponName: String,
     onConsumeSelectedCoupon: () -> Unit,
     onOpenCoupon: (Int) -> Unit,
-    onCheckout: () -> Unit
+    onCheckout: (Int, Int, Int) -> Unit
 ) {
     val viewModel: CartViewModel = hiltViewModel()
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -311,7 +308,7 @@ private fun CartSummaryPanel(
     onPromoChanged: (String) -> Unit,
     onOpenCoupon: () -> Unit,
     hasAppliedCoupon: Boolean,
-    onCheckout: () -> Unit,
+    onCheckout: (Int, Int, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -350,7 +347,7 @@ private fun CartSummaryPanel(
             bgColor = Primary,
             contentColor = TextPrimaryLight
         ) {
-            onCheckout()
+            onCheckout(discount, shippingFee, total)
         }
     }
 }

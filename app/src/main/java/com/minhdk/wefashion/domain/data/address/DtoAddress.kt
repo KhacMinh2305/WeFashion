@@ -1,5 +1,8 @@
 package com.minhdk.wefashion.domain.data.address
 
+import java.io.Serializable
+
+
 data class DtoAddressList(
     val user: DtoAddressUser?,
     val addresses: List<DtoAddress>
@@ -27,7 +30,8 @@ data class DtoAddress(
     val phone: String,
     val isDefault: Boolean,
     val userId: Int
-)
+): Serializable
+
 
 data class DtoDeleteAddressResult(
     val message: String

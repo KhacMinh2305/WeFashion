@@ -7,7 +7,7 @@ import com.minhdk.wefashion.infrastructure.config.network.token.DataTokenManager
 import com.minhdk.wefashion.infrastructure.config.network.token.base.TokenFetcher
 import com.minhdk.wefashion.infrastructure.config.network.token.base.TokenManager
 import com.minhdk.wefashion.infrastructure.remote.model.token.DataAccessToken
-import com.minhdk.wefashion.infrastructure.remote.api.AuthenticationService
+import com.minhdk.wefashion.infrastructure.remote.api.details.AuthenticationService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

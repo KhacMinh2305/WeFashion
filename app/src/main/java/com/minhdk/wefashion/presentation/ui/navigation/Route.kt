@@ -102,13 +102,20 @@ sealed class Cart {
     data class Coupon(val orderTotal: Int): Cart()
 
     @Serializable
-    object Payment: Cart()
+    data class Payment(
+        val shippingFee: Int,
+        val discount: Int,
+        val orderTotal: Int
+    ): Cart()
 
     @Serializable
     object Address: Cart()
 
     @Serializable
     object CreateAddress: Cart()
+
+    @Serializable
+    data class ProcessCheckout(val paymentLink: String): Cart()
 
     @Serializable
     object Back: Cart()

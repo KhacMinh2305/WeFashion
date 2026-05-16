@@ -19,7 +19,7 @@ interface UserRepository {
         bio: String
     ): RequestResult<DtoUser>
 
-    suspend fun getCachedUser(username: String): RequestResult<DtoUser>
+    suspend fun getCachedUser(): RequestResult<DtoUser>
 
 }
 

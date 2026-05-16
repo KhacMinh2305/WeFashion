@@ -5,6 +5,10 @@ import com.minhdk.wefashion.domain.data.coupon.DtoCoupon
 
 data class CartState(
     val isLoading: Boolean = false,
+    val isProcessingPayment: Boolean = false,
+    val discount: Int?,
+    val shippingFee: Int?,
+    val total: Int?,
     val cart: DtoCart? = null,
     val selectedSkus: Set<Int> = emptySet(),
     val promoCode: String = "",
@@ -19,8 +23,10 @@ sealed class CartIntent {
     data class UpdateSkuQuantity(val sku: Int, val change: String, val amount: Int) : CartIntent()
     data class PromoCodeChanged(val value: String) : CartIntent()
     data object ApplyPromo : CartIntent()
+    data class Checkout(val addressId: Int?) : CartIntent()
 }
 
 sealed class CartEffect {
     data class ShowToast(val message: String) : CartEffect()
+    data class StartPaymentProcess(val link: String) : CartEffect()
 }
