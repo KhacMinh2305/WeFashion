@@ -1,10 +1,7 @@
 package com.minhdk.wefashion.presentation.ui
 
 import android.annotation.SuppressLint
-import android.app.ComponentCaller
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -32,7 +29,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.minhdk.wefashion.domain.data.address.DtoAddress
-import com.minhdk.wefashion.infrastructure.remote.api.DataApiService
 import com.minhdk.wefashion.presentation.ui.navigation.AppStarter
 import com.minhdk.wefashion.presentation.ui.navigation.Authentication
 import com.minhdk.wefashion.presentation.ui.navigation.Cart
@@ -52,20 +48,22 @@ import com.minhdk.wefashion.presentation.ui.screen.cart.main.CartScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.payment.PaymentScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.address.SelectAddressScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.create_address.CreateAddressScreen
+import com.minhdk.wefashion.presentation.ui.screen.cart.payment_result.PaymentResultScreen
 import com.minhdk.wefashion.presentation.ui.screen.cart.process_payment.ProcessPaymentScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.main.MainScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.product.detail.ProductDetailScreen
 import com.minhdk.wefashion.presentation.ui.screen.home.search.SearchScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.introduce.IntroduceScreen
 import com.minhdk.wefashion.presentation.ui.screen.onboarding.splash.SplashScreen
+import com.minhdk.wefashion.presentation.ui.screen.order.list_order.ListOrderScreen
 import com.minhdk.wefashion.presentation.ui.theme.WeFashionTheme
 import com.minhdk.wefashion.util.helper.logD
 import dagger.hilt.android.AndroidEntryPoint
-import java.security.MessageDigest
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private var onReceivedPaymentResult: ((Boolean) -> Unit)? = null
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,16 +76,13 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
 
                 LaunchedEffect(Unit) {
-                    navController.currentBackStack.collect { backstack ->
-                        logD("midas", "----------------------backstack----------------------")
-                        backstack.forEach { entry ->
-                            logD("midas", entry.destination.route)
-                        }
-                    }
+                    navController.navigate(Onboarding.OnboardingFlow)
                 }
 
                 LaunchedEffect(Unit) {
-                    navController.navigate(Onboarding.OnboardingFlow)
+                    onReceivedPaymentResult = { success ->
+                        navController.navigate(Cart.PaymentResult(success))
+                    }
                 }
 
                 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -149,7 +144,7 @@ class MainActivity : ComponentActivity() {
 
     private fun NavGraphBuilder.appFlow(navController: NavHostController, contentPadding: PaddingValues) {
         appFlowHome(navController, contentPadding)
-        appFlowOrder(navController)
+        appFlowOrder(navController, contentPadding)
         appFlowCart(navController, contentPadding)
         appFlowSetting(navController)
     }
@@ -176,9 +171,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun NavGraphBuilder.appFlowOrder(navController: NavHostController) {
+    private fun NavGraphBuilder.appFlowOrder(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Order.OrderFlow>(startDestination = Order.MyOrder) {
             composable<Order.MyOrder> {
+                ListOrderScreen(contentPadding) {}
             }
             composable<Order.OrderDetail> {}
             composable<Order.OrderTracking> {}
@@ -279,6 +275,14 @@ class MainActivity : ComponentActivity() {
             composable<Cart.ProcessCheckout> {
                 val route = it.toRoute<Cart.ProcessCheckout>()
                 ProcessPaymentScreen(contentPadding = contentPadding, route.paymentLink)
+            }
+
+            composable<Cart.PaymentResult> {
+                val route = it.toRoute<Cart.PaymentResult>()
+                PaymentResultScreen(contentPadding, route.success) {
+                    navController.popBackStack(Cart.CartMain, false, saveState = false)
+                    handleUserNavigateTab(navController, 1)
+                }
             }
         }
     }
@@ -446,21 +450,21 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val uri = intent.data ?: run {
-            Log.d("AppLink", "data is null !!!")
-            return
-        }
-
-        val code = uri.getQueryParameter("code")           // "00"
-        val id = uri.getQueryParameter("id")               // "2e4acf1083304877bf1a8c108b30cccd"
-        val cancel = uri.getQueryParameter("cancel")       // "true"
-        val status = uri.getQueryParameter("status")       // "CANCELLED"
-        val orderCode = uri.getQueryParameter("orderCode") // "803347"
-
-        Log.d("AppLink", "uri=$uri")
-        Log.d("AppLink", "full uri: ${intent.data}")
-        Log.d("AppLink", "query: ${intent.data?.query}")
+        val uri = intent.data ?: return
+        val status = uri.getQueryParameter("status")
+        val orderCode = uri.getQueryParameter("orderCode")
         Log.d("AppLink", "status=$status, orderCode=$orderCode")
+        val success = if(status == "PAID") true else if(status == "CANCELLED") false else return
+        onReceivedPaymentResult?.invoke(success)
     }
 
 }
+
+// Force app links
+//  & "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" shell pm set-app-links --package com.minhdk.wefashion 1 all
+
+// Verify
+// & "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" shell pm get-app-links com.minhdk.wefashion
+
+// status=CANCELLED, orderCode=230141
+// status=PAID, orderCode=230142

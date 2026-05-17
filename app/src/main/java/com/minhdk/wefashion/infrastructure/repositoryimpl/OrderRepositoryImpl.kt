@@ -1,5 +1,6 @@
 package com.minhdk.wefashion.infrastructure.repositoryimpl
 
+import android.util.Log
 import com.minhdk.wefashion.domain.data.RequestResult
 import com.minhdk.wefashion.domain.data.cart.DtoCart
 import com.minhdk.wefashion.domain.data.order.DtoPaymentLink
@@ -7,6 +8,7 @@ import com.minhdk.wefashion.domain.repository.OrderRepository
 import com.minhdk.wefashion.infrastructure.datasource.order.remote.RemoteOrderDataSource
 import com.minhdk.wefashion.infrastructure.mapper.helper.order.buildRequestCreateOrderBody
 import com.minhdk.wefashion.infrastructure.mapper.model.toDto
+import com.minhdk.wefashion.util.helper.logD
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,6 +27,7 @@ class OrderRepositoryImpl @Inject constructor(
         cart: DtoCart
     ): RequestResult<DtoPaymentLink> {
         val body = buildRequestCreateOrderBody(discount, shippingFee, total, userId, addressId, cart)
+        logD("midas", body.toString())
         try {
             val res = remoteSource.createOrder(id, body)
             val resDto = (res ?: return RequestResult.Error(Exception("Can not create payment link now"))).toDto()!!

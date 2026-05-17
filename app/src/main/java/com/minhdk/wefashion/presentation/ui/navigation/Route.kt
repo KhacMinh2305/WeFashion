@@ -118,6 +118,9 @@ sealed class Cart {
     data class ProcessCheckout(val paymentLink: String): Cart()
 
     @Serializable
+    data class PaymentResult(val success: Boolean): Cart()
+
+    @Serializable
     object Back: Cart()
 }
 

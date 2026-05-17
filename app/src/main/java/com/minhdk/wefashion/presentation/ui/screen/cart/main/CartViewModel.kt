@@ -224,9 +224,7 @@ class CartViewModel @Inject constructor(
     }
 
     private fun checkout(addressId: Int?) {
-        logD("midas", "start checkout")
         if (route == null) return
-        logD("midas", "Step 1")
         viewModelScope.launch(Dispatchers.IO) {
 
             _uiState.value = _uiState.value.copy(isProcessingPayment = true)
@@ -251,7 +249,6 @@ class CartViewModel @Inject constructor(
                         },
                         cart = cart ?: return@launch
                     )
-                    logD("midas", "result: $result")
                     when(result) {
                         is RequestResult.Error -> {
                             showError(result.error.message ?: "Something went wrong")
