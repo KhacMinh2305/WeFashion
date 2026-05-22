@@ -230,19 +230,6 @@ private fun CreateAddressForm(
     val unfocusedBorderColor = MaterialTheme.colorScheme.outline
     val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
 
-    val isPhoneValid = phone.all { it.isDigit() }
-    val areFieldsFilled = listOf(
-        name,
-        ward,
-        district,
-        city,
-        detail,
-        receiverName,
-        phone
-    ).all { it.isNotBlank() }
-    val areCoordinatesValid = provideLat() >= 0.0 && provideLong() >= 0.0 && !provideLat().isNaN() && !provideLong().isNaN()
-    val isFormValid = areFieldsFilled && isPhoneValid && areCoordinatesValid
-
     LazyColumn(
         modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         contentPadding = PaddingValues(bottom = 24.dp)
@@ -398,7 +385,6 @@ private fun CreateAddressForm(
                 contentColor = TextPrimaryLight,
                 disabledContentColor = TextSecondary
             ) {
-                if (!isFormValid) return@BaseButtonBox
                 onCreate()
             }
         }

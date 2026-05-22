@@ -91,13 +91,13 @@ class CreateAddressViewModel @Inject constructor(
 
     private fun validate(state: CreateAddressState): List<String> {
         val messages = mutableListOf<String>()
-        if (state.name.isBlank()) messages.add("Vui long nhap ten dia chi")
-        if (state.ward.isBlank()) messages.add("Vui long nhap phuong")
-        if (state.district.isBlank()) messages.add("Vui long nhap quan")
-        if (state.city.isBlank()) messages.add("Vui long nhap thanh pho")
-        if (state.detail.isBlank()) messages.add("Vui long nhap dia chi chi tiet")
-        if (state.receiverName.isBlank()) messages.add("Vui long nhap ten nguoi nhan")
-        if (state.phone.isBlank()) {
+        if (state.name.isEmpty()) messages.add("Vui long nhap ten dia chi")
+        if (state.ward.isEmpty()) messages.add("Vui long nhap phuong")
+        if (state.district.isEmpty()) messages.add("Vui long nhap quan")
+        if (state.city.isEmpty()) messages.add("Vui long nhap thanh pho")
+        if (state.detail.isEmpty()) messages.add("Vui long nhap dia chi chi tiet")
+        if (state.receiverName.isEmpty()) messages.add("Vui long nhap ten nguoi nhan")
+        if (state.phone.isEmpty()) {
             messages.add("Vui long nhap so dien thoai")
         } else if (!state.phone.all { it.isDigit() }) {
             messages.add("So dien thoai khong hop le")
