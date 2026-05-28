@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,16 +20,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.minhdk.wefashion.R
 import com.minhdk.wefashion.presentation.ui.screen.order.list_order.component.OrderItem
 import com.minhdk.wefashion.presentation.ui.navigation.Order
 import com.minhdk.wefashion.presentation.ui.theme.Background
 import com.minhdk.wefashion.presentation.ui.theme.Black
-import com.minhdk.wefashion.presentation.ui.theme.InputBackground
 import com.minhdk.wefashion.presentation.ui.theme.rounded
 
 @Composable
