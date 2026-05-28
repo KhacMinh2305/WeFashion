@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.minhdk.wefashion" />
-                  <option name="mobileSdkAppId" value="1:823476976321:android:c7bfb1325627882b7f3240" />
-                  <option name="projectId" value="weclothes-98d4f" />
-                  <option name="projectNumber" value="823476976321" />
+                  <option name="appId" value="PLACEHOLDER" />
+                  <option name="mobileSdkAppId" value="" />
+                  <option name="projectId" value="" />
+                  <option name="projectNumber" value="" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -123,13 +123,3 @@ sealed class Cart {
     @Serializable
     object Back: Cart()
 }
-
-@Serializable
-sealed class Setting {
-
-    @Serializable
-    object SettingFlow: Setting()
-
-    @Serializable
-    object General: Setting()
-}

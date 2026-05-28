@@ -35,7 +35,6 @@ import com.minhdk.wefashion.presentation.ui.navigation.Cart
 import com.minhdk.wefashion.presentation.ui.navigation.Home
 import com.minhdk.wefashion.presentation.ui.navigation.Onboarding
 import com.minhdk.wefashion.presentation.ui.navigation.Order
-import com.minhdk.wefashion.presentation.ui.navigation.Setting
 import com.minhdk.wefashion.presentation.ui.navigation.appNavBarItemConfig
 import com.minhdk.wefashion.presentation.ui.navigation.base.AppBottomBar
 import com.minhdk.wefashion.presentation.ui.navigation.navigationItems
@@ -146,7 +145,6 @@ class MainActivity : ComponentActivity() {
         appFlowHome(navController, contentPadding)
         appFlowOrder(navController, contentPadding)
         appFlowCart(navController, contentPadding)
-        appFlowSetting(navController)
     }
 
     private fun NavGraphBuilder.appFlowHome(navController: NavHostController, contentPadding: PaddingValues) {
@@ -219,7 +217,6 @@ class MainActivity : ComponentActivity() {
             }
 
             composable<Cart.Payment> { backStackEntry ->
-                val route = backStackEntry.toRoute<Cart.Payment>()
                 val selectedAddress by backStackEntry.savedStateHandle
                     .getStateFlow("selectedAddress", null as DtoAddress?)
                     .collectAsState()
@@ -287,12 +284,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun NavGraphBuilder.appFlowSetting(navController: NavHostController) {
-        navigation<Setting.SettingFlow>(startDestination = Setting.General) {
-            composable<Setting.General> {}
-        }
-    }
-
     @Composable
     private fun SetupNavigation(navController: NavHostController, contentPadding: PaddingValues) {
         NavHost(navController = navController, startDestination = AppStarter) {
@@ -324,8 +315,6 @@ class MainActivity : ComponentActivity() {
             destination.hasRoute<Cart.Payment>() -> pos = 2
             destination.hasRoute<Cart.Address>() -> pos = 2
             destination.hasRoute<Cart.CreateAddress>() -> pos = 2
-
-            destination.hasRoute<Setting.General>() -> pos = 3
         }
         return pos
     }
@@ -336,7 +325,6 @@ class MainActivity : ComponentActivity() {
             0 -> Home.HomeFlow
             1 -> Order.OrderFlow
             2 -> Cart.CartFlow
-            3 -> Setting.SettingFlow
             else -> return
         }
 

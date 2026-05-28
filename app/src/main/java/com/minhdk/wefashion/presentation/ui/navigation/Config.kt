@@ -18,8 +18,7 @@ private fun <T> createNavBarItem(pos: Int, ic: T, label: String): NavBarItem<T> 
 val navigationItems = listOf(
     createNavBarItem(0, R.drawable.ic_home_inactive ,"Home"),
     createNavBarItem(1, R.drawable.ic_order_inactive ,"My Order"),
-    createNavBarItem(2, R.drawable.ic_cart ,"Cart"),
-    createNavBarItem(3, R.drawable.ic_user_inactive ,"Setting")
+    createNavBarItem(2, R.drawable.ic_cart ,"Cart")
 )
 
 fun appNavBarItemConfig() = singleColorNavBarItemConfig(

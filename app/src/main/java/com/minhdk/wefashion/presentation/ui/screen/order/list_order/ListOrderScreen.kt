@@ -118,19 +118,5 @@ private fun OrderTopBar() {
             color = Black,
             modifier = Modifier.weight(1f)
         )
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(36.dp)
-                .background(InputBackground, rounded(18))
-        ) {
-            androidx.compose.material3.Icon(
-                painter = painterResource(R.drawable.ic_cart),
-                contentDescription = null,
-                tint = Black,
-                modifier = Modifier.size(18.dp)
-            )
-        }
     }
 }
