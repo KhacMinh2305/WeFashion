@@ -70,6 +70,8 @@ sealed class Home {
 
     @Serializable
     object Back: Home()
+
+    object Logout: Home() 
 }
 
 @Serializable

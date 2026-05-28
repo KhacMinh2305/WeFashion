@@ -94,9 +94,11 @@ private fun MainContent(
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         item {
-            HeaderSection(userState = uiState.user) {
+            HeaderSection(userState = uiState.user, {
                 onNavigate(Home.Search)
-            }
+            }, {
+                onNavigate(Home.Logout)
+            })
         }
         item {
             PromoBannerSection(couponsState = uiState.coupons)
@@ -134,7 +136,8 @@ private fun MainContent(
 @Composable
 private fun HeaderSection(
     userState: UiState<DtoUser>,
-    onClick: () -> Unit
+    onClickSearch: () -> Unit,
+    onClickLogout: () -> Unit,
 ) {
     StateBox(
         state = userState,
@@ -143,10 +146,10 @@ private fun HeaderSection(
             HeaderContent(
                 name = "Hi, " + user.name,
                 bio = user.bio,
-                avatarUrl = user.avatarUrl
-            ) {
-                onClick()
-            }
+                avatarUrl = user.avatarUrl,
+                onClickSearch = onClickSearch,
+                onClickLogout = onClickLogout
+            )
         },
         error = { HeaderContent(name = "Hi", bio = "", avatarUrl = "") },
     )
@@ -158,7 +161,8 @@ private fun HeaderContent(
     name: String,
     bio: String,
     avatarUrl: String,
-    onClickSearch: () -> Unit = {}
+    onClickSearch: () -> Unit = {},
+    onClickLogout: () -> Unit = {}
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -186,8 +190,11 @@ private fun HeaderContent(
                 )
             }
         }
+
         Spacer(modifier = Modifier.width(12.dp))
+
         Column(
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier.weight(1f)
         ) {
             Text(
@@ -198,14 +205,17 @@ private fun HeaderContent(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = bio,
-                style = MaterialTheme.typography.bodySmall,
-                color = TextSecondary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            if(bio.isNotEmpty()) {
+                Text(
+                    text = bio,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSecondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
+
         Box(
             modifier = Modifier
                 .size(36.dp)
@@ -223,7 +233,26 @@ private fun HeaderContent(
                 modifier = Modifier.size(18.dp)
             )
         }
+
         Spacer(modifier = Modifier.width(10.dp))
+
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .clip(CircleShape)
+                .background(Color.White)
+                .border(BorderStroke(1.dp, TextSecondary.copy(alpha = 0.15f)), CircleShape)
+                .clickable {
+                    onClickLogout()
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_logout),
+                contentDescription = "Logout",
+                modifier = Modifier.size(18.dp)
+            )
+        }
     }
 }
 

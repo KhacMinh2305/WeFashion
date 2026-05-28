@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
@@ -13,13 +16,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -69,6 +76,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             WeFashionTheme {
 
                 val navController = rememberNavController()
@@ -109,6 +117,7 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.onboardingFlow(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Onboarding.OnboardingFlow>(startDestination = Onboarding.Splash) {
             composable<Onboarding.Splash> {
+                BackHandler(navController)
                 SplashScreen(contentPadding) { navigateOnboarding(navController, it) }
             }
             composable<Onboarding.Introduce> {
@@ -120,6 +129,7 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.authenticationFlow(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Authentication.AuthFlow>(startDestination = Authentication.Login) {
             composable<Authentication.Login> {
+                BackHandler(navController)
                 LoginScreen(contentPadding) { navigateAuthentication(navController, it) }
             }
             composable<Authentication.Register> {
@@ -150,6 +160,7 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.appFlowHome(navController: NavHostController, contentPadding: PaddingValues) {
         navigation<Home.HomeFlow>(startDestination = Home.Main) {
             composable<Home.Main> {
+                BackHandler(navController)
                 MainScreen(contentPadding) {
                     handleHomeNavigation(navController, it)
                 }
@@ -398,6 +409,15 @@ class MainActivity : ComponentActivity() {
                 navController.navigateUp()
             }
 
+            is Home.Logout -> {
+                navController.navigate(Authentication.AuthFlow) {
+                    popUpTo(AppStarter) {
+                        inclusive = false
+                    }
+                    launchSingleTop = true
+                }
+            }
+
             else -> {}
         }
     }
@@ -433,6 +453,26 @@ class MainActivity : ComponentActivity() {
             }
 
             else -> {}
+        }
+    }
+
+    @Composable
+    private fun BackHandler(navController: NavHostController) {
+        BackHandler {
+            val isStarter = navController.currentBackStackEntry?.destination?.let {
+                checkCurrentScreenIsStartScreen(it)
+            } == true
+            Log.d("BackPress", "isStarter=$isStarter")
+            if (!isStarter) navController.navigateUp()
+        }
+    }
+
+    private fun checkCurrentScreenIsStartScreen(destination: NavDestination): Boolean {
+        return when {
+            destination.hasRoute<Onboarding.Splash>() -> true
+            destination.hasRoute<Home.Main>() -> true
+            destination.hasRoute<Authentication.Login>() -> true
+            else -> false
         }
     }
 
