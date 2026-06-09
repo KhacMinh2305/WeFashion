@@ -1,6 +1,7 @@
 package com.minhdk.wefashion.infrastructure.datasource.coupon.remote
 
 import com.minhdk.wefashion.infrastructure.remote.api.DataApiService
+import com.minhdk.wefashion.infrastructure.remote.model.api.coupon.RemoteCoupon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -12,7 +13,7 @@ class RemoteCouponDataSourceImpl @Inject constructor(
 ) : RemoteCouponDataSource {
 
     override suspend fun getCoupons() = withContext(Dispatchers.IO) {
-        return@withContext apiService.getCoupons().data?.coupons.orEmpty()
+        return@withContext apiService.getCoupons().data?.coupons.orEmpty().excludeExpiredCoupons()
     }
 
     override suspend fun getCouponById(id: Int) = withContext(Dispatchers.IO) {
@@ -31,4 +32,17 @@ class RemoteCouponDataSourceImpl @Inject constructor(
         return@withContext apiService.getCouponsForOrder(shopId).data?.coupons.orEmpty()
     }
 
+    private fun List<RemoteCoupon>.excludeExpiredCoupons(): List<RemoteCoupon> {
+        val now = System.currentTimeMillis()
+        return filter { coupon ->
+            coupon.expiredAt?.let {
+                try {
+                    val expiredTime = java.time.Instant.parse(it).toEpochMilli()
+                    expiredTime > now
+                } catch (e: Exception) {
+                    true
+                }
+            } ?: true
+        }
+    }
 }

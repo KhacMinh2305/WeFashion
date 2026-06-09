@@ -143,14 +143,14 @@ fun ProductDetailScreen(
                     description = product?.description ?: ""
                 )
 
-                Spacer(modifier = Modifier.height(15.dp))
-
-                ProductScreenDetailShopInfo(
-                    avatarUrl = shop?.avatarUrl
-                        ?: "https://cdn.sachhayonline.com/wp-content/uploads/2026/01/cho-meme-hai.jpg",
-                    name = shop?.name ?: "",
-                    followers = shop?.followers ?: 0
-                )
+//                Spacer(modifier = Modifier.height(15.dp))
+//
+//                ProductScreenDetailShopInfo(
+//                    avatarUrl = shop?.avatarUrl
+//                        ?: "https://cdn.sachhayonline.com/wp-content/uploads/2026/01/cho-meme-hai.jpg",
+//                    name = shop?.name ?: "",
+//                    followers = shop?.followers ?: 0
+//                )
             }
 
             item {
