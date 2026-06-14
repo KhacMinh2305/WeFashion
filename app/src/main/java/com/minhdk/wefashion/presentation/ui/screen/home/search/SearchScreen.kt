@@ -83,7 +83,7 @@ fun SearchScreen(
         if(!uiState.value.isLoading) {
             items(items = uiState.value.products, key = { it.id }) { item ->
                 SearchProductItem(item) {
-
+                    onNavigate(Home.ProductDetail(item.id))
                 }
                 Spacer(
                     modifier = Modifier.height(12.dp)
